@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ChevronDown,
@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import PlayableFrame from '@/components/game/PlayableFrame';
+import StoreLink from '@/components/game/StoreLink';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import { playableAds, playableCategories, getPlayablesByCategory, type PlayableAd } from '@/data/playableAds';
 
@@ -83,8 +84,16 @@ export default function PlayableAdsSection() {
   const [activeBuildIndex, setActiveBuildIndex] = useState<number>(0);
   const [reloadKey, setReloadKey] = useState<number>(0);
   const [highlightedAdId, setHighlightedAdId] = useState<string | null>(null);
+  const pendingPlayTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  const openPlayer = (ad: PlayableAd) => {
+  const cancelPendingPlay = useCallback(() => {
+    pendingPlayTimers.current.forEach(clearTimeout);
+    pendingPlayTimers.current = [];
+  }, []);
+
+  const openPlayer = useCallback((ad: PlayableAd) => {
+    cancelPendingPlay();
+    setHighlightedAdId(null);
     setActiveAd(ad);
     setIsFullscreen(false);
     setIsLandscape(false);
@@ -94,19 +103,21 @@ export default function PlayableAdsSection() {
     setActiveBuildIndex(randomIndex);
     
     setReloadKey(0);
-  };
+  }, [cancelPendingPlay]);
 
   useEffect(() => {
     const handlePlayGame = (e: Event) => {
       const customEvent = e as CustomEvent<{ slug: string }>;
       const ad = playableAds.find((ad) => ad.slug === customEvent.detail.slug);
       if (ad) {
+        cancelPendingPlay();
+        setHighlightedAdId(null);
         // 1. Ensure we see all games first (so the card is in the DOM)
         setActiveFilter('all');
         setShowAllAds(true);
 
         // 2. Scroll to the specific card centered in the viewport
-        setTimeout(() => {
+        pendingPlayTimers.current.push(setTimeout(() => {
           const cardElement = document.getElementById(`playable-ad-${ad.slug}`);
           if (cardElement) {
             cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -116,23 +127,26 @@ export default function PlayableAdsSection() {
               section.scrollIntoView({ behavior: 'smooth' });
             }
           }
-        }, 100);
+        }, 100));
 
         // 3. Highlight the specific card when scroll is near completion
-        setTimeout(() => {
+        pendingPlayTimers.current.push(setTimeout(() => {
           setHighlightedAdId(ad.id);
-        }, 750);
+        }, 250));
 
         // 4. Open player after showing the highlighted effect
-        setTimeout(() => {
+        pendingPlayTimers.current.push(setTimeout(() => {
           setHighlightedAdId(null);
           openPlayer(ad);
-        }, 2050);
+        }, 650));
       }
     };
     window.addEventListener('play-game', handlePlayGame);
-    return () => window.removeEventListener('play-game', handlePlayGame);
-  }, []);
+    return () => {
+      window.removeEventListener('play-game', handlePlayGame);
+      cancelPendingPlay();
+    };
+  }, [cancelPendingPlay, openPlayer]);
 
   const filteredAds = getPlayablesByCategory(activeFilter);
   const visibleAds =
@@ -155,6 +169,7 @@ export default function PlayableAdsSection() {
   };
 
   const closePlayer = () => {
+    cancelPendingPlay();
     setActiveAd(null);
     setIsFullscreen(false);
   };
@@ -374,15 +389,13 @@ export default function PlayableAdsSection() {
                     ? 'w-full md:w-[670px] h-[50%] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-border/30 p-0'
                     : 'w-full md:w-[350px] h-[55%] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-border/30 p-0'
               } transition-all duration-300`}>
-                {isFullscreen ? (
-                  /* Fullscreen Iframe */
                   <div className={`relative overflow-hidden bg-black mx-auto transition-all ${
                     isFullscreen && !isLandscape
                       ? 'h-full aspect-[9/16] max-w-full shadow-2xl border-x border-white/10'
                       : 'w-full h-full'
                   }`}>
                     <PlayableFrame
-                      key={`${activeAd.id}-${activeBuildIndex}-${reloadKey}-${isLandscape}`}
+                      key={`${activeAd.id}-${activeBuildIndex}-${reloadKey}`}
                       src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${
                         activeAd.demoBuilds && activeAd.demoBuilds[activeBuildIndex]
                           ? activeAd.demoBuilds[activeBuildIndex].publicPath
@@ -393,22 +406,6 @@ export default function PlayableAdsSection() {
                       appStore={activeAd.appStore}
                     />
                   </div>
-                ) : (
-                  /* Simple Iframe Wrapper */
-                  <div className="relative w-full h-full overflow-hidden bg-black transition-all duration-300">
-                    <PlayableFrame
-                      key={`${activeAd.id}-${activeBuildIndex}-${reloadKey}-${isLandscape}`}
-                      src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${
-                        activeAd.demoBuilds && activeAd.demoBuilds[activeBuildIndex]
-                          ? activeAd.demoBuilds[activeBuildIndex].publicPath
-                          : activeAd.publicPath
-                      }`}
-                      title={activeAd.title}
-                      googlePlay={activeAd.googlePlay}
-                      appStore={activeAd.appStore}
-                    />
-                  </div>
-                )}
 
                 {/* Overlaid controls when in Fullscreen */}
                 {isFullscreen && (
@@ -593,13 +590,9 @@ export default function PlayableAdsSection() {
                   </div>
 
                   {/* App Store / Google Play Download Links */}
-                  {(activeAd.googlePlay || activeAd.appStore) && (
-                    <div className="mt-4 pt-3.5 border-t border-violet-500/35 flex flex-col sm:flex-row gap-3">
-                      <a
-                        href={activeAd.googlePlay || activeAd.appStore}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 inline-flex items-center justify-between px-5 h-13 rounded-xl bg-[#090a0f] border border-violet-500/55 hover:border-violet-400 hover:bg-[#141720]/60 text-sm font-sans font-semibold text-white tracking-wide transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.15)] hover:shadow-[0_0_25px_rgba(168,85,247,0.4)]"
+                    <div className="mt-4 pt-3.5 border-t border-violet-500/35 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <StoreLink label="Google Play"
+                        href={activeAd.googlePlay}
                       >
                         <div className="flex items-center gap-3">
                           <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
@@ -612,13 +605,9 @@ export default function PlayableAdsSection() {
                           </svg>
                           Google Play
                         </div>
-                        <span className="text-violet-400/80 font-code font-bold text-sm select-none">&gt;</span>
-                      </a>
-                      <a
-                        href={activeAd.appStore || activeAd.googlePlay}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 inline-flex items-center justify-between px-5 h-13 rounded-xl bg-[#090a0f] border border-violet-500/55 hover:border-violet-400 hover:bg-[#141720]/60 text-sm font-sans font-semibold text-white tracking-wide transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.15)] hover:shadow-[0_0_25px_rgba(168,85,247,0.4)]"
+                      </StoreLink>
+                      <StoreLink label="App Store"
+                        href={activeAd.appStore}
                       >
                         <div className="flex items-center gap-3">
                           <svg className="w-5 h-5 fill-white shrink-0" viewBox="0 0 170 170">
@@ -626,10 +615,8 @@ export default function PlayableAdsSection() {
                           </svg>
                           App Store
                         </div>
-                        <span className="text-violet-400/80 font-code font-bold text-sm select-none">&gt;</span>
-                      </a>
+                      </StoreLink>
                     </div>
-                  )}
                 </div>
               )}
             </motion.div>

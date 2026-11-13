@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -72,14 +72,12 @@ const experiences = [
   }
 ];
 
-export default function CVModal({ isOpen, onClose }: CVModalProps) {
-  const [mounted, setMounted] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const pdfUrl = '/cv/CV_Trinh_Van_Duy_Cocos_Developer.pdf';
+const subscribeToClient = () => () => {};
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export default function CVModal({ isOpen, onClose }: CVModalProps) {
+  const mounted = useSyncExternalStore(subscribeToClient, () => true, () => false);
+  const [copied, setCopied] = useState(false);
+  const pdfUrl = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/cv/CV_Trinh_Van_Duy_Cocos_Developer.pdf`;
 
   const handleCopyLink = async () => {
     const fullUrl = `${window.location.origin}${pdfUrl}`;

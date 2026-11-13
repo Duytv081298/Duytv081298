@@ -173,8 +173,10 @@ export const playableAds: PlayableAd[] = rawPlayableAds.map((ad) => {
   const builds = typedBuildsCatalog[ad.slug] || [];
   return {
     ...ad,
-    googlePlay: links?.googlePlay || ad.googlePlay || '',
-    appStore: links?.appStore || ad.appStore || '',
+    googlePlay: (links?.googlePlay ?? ad.googlePlay ?? '').startsWith('https://play.google.com/')
+      ? (links?.googlePlay ?? ad.googlePlay ?? '') : '',
+    appStore: (links?.appStore ?? ad.appStore ?? '').startsWith('https://apps.apple.com/')
+      ? (links?.appStore ?? ad.appStore ?? '') : '',
     icon: (gameIcons as Record<string, string>)[ad.slug] || '',
     demoBuilds: builds.length > 0 ? builds : [
       { name: 'Default Build', filename: 'index.html', publicPath: ad.publicPath }
