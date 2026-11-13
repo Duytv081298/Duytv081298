@@ -13,6 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
+import PlayableFrame from '@/components/game/PlayableFrame';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import { playableAds, playableCategories, getPlayablesByCategory, type PlayableAd } from '@/data/playableAds';
 
@@ -380,35 +381,31 @@ export default function PlayableAdsSection() {
                       ? 'h-full aspect-[9/16] max-w-full shadow-2xl border-x border-white/10'
                       : 'w-full h-full'
                   }`}>
-                    <iframe
+                    <PlayableFrame
                       key={`${activeAd.id}-${activeBuildIndex}-${reloadKey}-${isLandscape}`}
                       src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${
                         activeAd.demoBuilds && activeAd.demoBuilds[activeBuildIndex]
                           ? activeAd.demoBuilds[activeBuildIndex].publicPath
                           : activeAd.publicPath
                       }`}
-                      className="w-full h-full border-0 block"
-                      scrolling="no"
-                      sandbox="allow-scripts allow-same-origin"
-                      title={`Play ${activeAd.title}`}
-                      allow="autoplay"
+                      title={activeAd.title}
+                      googlePlay={activeAd.googlePlay}
+                      appStore={activeAd.appStore}
                     />
                   </div>
                 ) : (
                   /* Simple Iframe Wrapper */
                   <div className="relative w-full h-full overflow-hidden bg-black transition-all duration-300">
-                    <iframe
+                    <PlayableFrame
                       key={`${activeAd.id}-${activeBuildIndex}-${reloadKey}-${isLandscape}`}
                       src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${
                         activeAd.demoBuilds && activeAd.demoBuilds[activeBuildIndex]
                           ? activeAd.demoBuilds[activeBuildIndex].publicPath
                           : activeAd.publicPath
                       }`}
-                      className="w-full h-full border-0 block"
-                      scrolling="no"
-                      sandbox="allow-scripts allow-same-origin"
-                      title={`Play ${activeAd.title}`}
-                      allow="autoplay"
+                      title={activeAd.title}
+                      googlePlay={activeAd.googlePlay}
+                      appStore={activeAd.appStore}
                     />
                   </div>
                 )}
