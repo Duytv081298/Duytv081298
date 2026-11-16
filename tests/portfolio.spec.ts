@@ -248,7 +248,7 @@ test('English, Vietnamese and legacy PDF URLs serve the exact supplied CVs', asy
     const response = await request.get(url);
     expect(response.ok()).toBe(true);
     const data = await response.body();
-    expect(data.subarray(0, 5).toString()).toBe('%PDF-');
+    expect(data.subarray(0, 16).toString()).toMatch(/^\s*%PDF-\d\.\d/);
     expect(data.equals(await readFile(source))).toBe(true);
   }
 });
