@@ -79,7 +79,7 @@ export default function FeaturedGamesSection() {
                 </p>
 
                 <ul className="relative z-10 mt-auto space-y-1 pt-4">
-                  {games.filter((game) => category.value === 'web' ? game.platforms.includes('Web') : game.category === category.value).map((game) => (
+                  {games.filter((game) => category.value === 'web' ? game.platforms.includes('Web') : game.category === category.value || (category.value === 'mobile' && game.platforms.includes('Mobile'))).map((game) => (
                     <li key={game.slug}>
                       <Link href={`/games/${game.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-md py-2 text-sm font-medium text-primary hover:underline" aria-label={`${t('View case study')}: ${game.title}`}>
                         {game.title}<ArrowRight size={15} aria-hidden="true" />

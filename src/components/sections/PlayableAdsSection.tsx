@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import {
   ChevronDown,
   ChevronUp,
@@ -243,7 +243,6 @@ export default function PlayableAdsSection() {
         </div>
 
         {/* Grid */}
-        <AnimatePresence mode="wait">
           <motion.div
             id="playable-ads-grid"
             key={activeFilter}
@@ -333,7 +332,6 @@ export default function PlayableAdsSection() {
               );
             })}
           </motion.div>
-        </AnimatePresence>
 
         {activeFilter === 'all' && filteredAds.length > INITIAL_VISIBLE_ADS && (
           <div className="mt-5 flex justify-center">

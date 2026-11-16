@@ -57,6 +57,7 @@ for (const [locale, code, heading] of [
     await expect(page.locator('html')).toHaveAttribute('lang', code);
     await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible();
     await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('#games a[href*="/games/"]')).toHaveCount(games.length);
     expect(errors).toEqual([]);
     await context.close();
   });
@@ -155,6 +156,7 @@ test('playable filtering and player controls work on mobile', async ({ page }) =
   await game.click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveAccessibleName('Block Buster');
   await expect(dialog.locator('iframe')).toBeVisible();
   await dialog.getByRole('button', { name: 'Rotate Simulator', exact: true }).click();
   await dialog.getByRole('button', { name: 'Maximize Player', exact: true }).click();
