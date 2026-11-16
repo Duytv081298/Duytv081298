@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLocale } from '@/components/i18n/LocaleProvider';
 import { motion, useReducedMotion } from 'motion/react';
 import { BriefcaseBusiness, Download, Gamepad2, Layers3, Play, Zap } from 'lucide-react';
 import { GithubIcon, FacebookIcon } from '@/components/ui/BrandIcons';
@@ -10,10 +11,10 @@ import CVModal from '@/components/ui/CVModal';
 import { playableAds } from '@/data/playableAds';
 
 const stats = [
-  { value: '30+', label: 'Projects', color: '#3EA6FF', Icon: Layers3 },
-  { value: '5+', label: 'Years Exp.', color: '#00DFA2', Icon: Zap },
-  { value: '4', label: 'Companies', color: '#9B74FF', Icon: BriefcaseBusiness },
-  { value: 'HTML5', label: 'Cocos Creator', color: '#8AB4FF', Icon: Gamepad2 },
+  { value: '30+', label: 'projects', color: '#3EA6FF', Icon: Layers3 },
+  { value: '5+', label: 'years', color: '#00DFA2', Icon: Zap },
+  { value: '4', label: 'companies', color: '#9B74FF', Icon: BriefcaseBusiness },
+  { value: 'HTML5', label: 'cocos', color: '#8AB4FF', Icon: Gamepad2 },
 ];
 
 const iconPositions = [
@@ -36,6 +37,7 @@ const iconPositions = [
 const heroGames = playableAds.filter((ad) => ad.icon).slice(0, iconPositions.length);
 
 export default function HeroSection() {
+  const { t } = useLocale();
   const reduceMotion = useReducedMotion();
   const [isCVModalOpen, setIsCVModalOpen] = useState(false);
 
@@ -66,7 +68,7 @@ export default function HeroSection() {
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_12px_rgba(0,217,126,0.8)]" />
               </span>
               <span className="font-code text-[11px] font-semibold uppercase tracking-[0.16em] text-text-secondary">
-                Available for new projects
+                {t('available')}
               </span>
             </motion.div>
 
@@ -85,7 +87,7 @@ export default function HeroSection() {
                 Cocos Developer
               </p>
               <p className="mt-4 max-w-[570px] text-sm leading-7 text-text-secondary">
-                I build high-performance, engaging and scalable games and playable ads across Mobile, Web and Instant Platforms.
+                {t('intro')}
               </p>
             </motion.div>
 
@@ -104,7 +106,7 @@ export default function HeroSection() {
                   <span className="font-code text-base font-bold tabular-nums" style={{ color }}>
                     {value}
                   </span>
-                  <span className="text-[10px] leading-tight text-text-secondary">{label}</span>
+                  <span className="text-[10px] leading-tight text-text-secondary">{t(label as Parameters<typeof t>[0])}</span>
                 </div>
               ))}
             </motion.div>
@@ -117,11 +119,11 @@ export default function HeroSection() {
             >
               <MagneticButton variant="primary" size="md" onClick={() => openGame('arrow')} className="min-h-12 min-w-[245px] text-sm font-semibold">
                 <Play size={15} fill="currentColor" aria-hidden="true" />
-                Play Demo Games
+                {t('play')}
               </MagneticButton>
               <MagneticButton variant="ghost" size="md" onClick={() => setIsCVModalOpen(true)} className="min-h-12 min-w-[225px] text-sm font-semibold">
                 <Download size={15} aria-hidden="true" />
-                Download CV
+                {t('cv')}
               </MagneticButton>
             </motion.div>
 
@@ -131,7 +133,7 @@ export default function HeroSection() {
               transition={{ duration: 0.45, delay: 0.32 }}
               className="mt-7 flex items-center gap-2.5"
             >
-              <span className="mr-1 font-code text-[9px] uppercase tracking-[0.2em] text-text-muted">Find me on</span>
+              <span className="mr-1 font-code text-[9px] uppercase tracking-[0.2em] text-text-muted">{t('social')}</span>
               <a
                 href="https://github.com/Duytv081298"
                 target="_blank"
