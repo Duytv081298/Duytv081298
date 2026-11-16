@@ -40,10 +40,21 @@ export const metadata: Metadata = {
     "Trịnh Văn Duy",
   ],
   authors: [{ name: "Trịnh Văn Duy" }],
+  metadataBase: new URL("https://duytv081298.github.io"),
+  alternates: { canonical: "/Duytv081298/" },
+  robots: { index: true, follow: true },
   openGraph: {
     title: "Trịnh Văn Duy — Senior Game Developer",
     description: "Explore my game portfolio. Play demos directly in your browser.",
     type: "website",
+    url: "/Duytv081298/",
+    siteName: "Trịnh Văn Duy | Game Developer Portfolio",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary",
+    title: "Trịnh Văn Duy — Senior Game Developer",
+    description: "Playable ads, game engineering and performance optimization.",
   },
 };
 
