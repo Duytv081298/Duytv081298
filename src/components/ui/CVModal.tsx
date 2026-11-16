@@ -1,282 +1,115 @@
 'use client';
 
 import { useState } from 'react';
-import Modal from './Modal';
-import { useLocale } from '@/components/i18n/LocaleProvider';
 import { motion } from 'motion/react';
-import { 
-  X, 
-  Download, 
-  ExternalLink, 
-  Copy, 
-  Check, 
-  GraduationCap, 
-  Briefcase, 
-  Code2, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Sparkles,
-  FileText
-} from 'lucide-react';
-import { FacebookIcon } from './BrandIcons';
+import { X, Download, ExternalLink, Copy, Check, GraduationCap, Briefcase, Code2, Mail, Phone, MapPin, Trophy, FileText } from 'lucide-react';
+import Modal from './Modal';
+import { GithubIcon, LinkedinIcon } from './BrandIcons';
+import { useLocale, type Locale } from '@/components/i18n/LocaleProvider';
+import { profile, cvFiles } from '@/data/profile';
 
-interface CVModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const experiences = [
-  {
-    period: '2024 – Present',
-    company: 'PIXON',
-    role: 'Game Developer',
-    highlights: [
-      'Created playable ads with Cocos Creator and Unity.',
-      'Built tools to automate playable ad exports across platforms.'
-    ],
-    tech: ['Cocos Creator', 'Unity', 'Playable Ads', 'Tooling']
-  },
-  {
-    period: '2023 - 2024',
-    company: 'GAME ZOKA',
-    role: 'Game Developer',
-    highlights: [
-      'Researched, evaluated and selected games for development.',
-      'Coordinated game development tasks within the team.',
-      'Developed Facebook Instant Games with Cocos Creator.',
-      'Used PlayFab for player data and leaderboards.',
-      'Built frontends for real-time card games with Cocos Creator.'
-    ],
-    tech: ['Cocos Creator', 'Facebook Instant Games', 'PlayFab', 'Realtime Games']
-  },
-  {
-    period: '2021 - 2022',
-    company: 'SONAT STUDIO',
-    role: 'Game Developer',
-    highlights: [
-      'Created size-optimized playable ads with PixiJS and CreateJS.',
-      'Developed Facebook Instant Games.',
-      'Developed puzzle games with Unity.'
-    ],
-    tech: ['PixiJS', 'CreateJS', 'Facebook Instant Games', 'Unity']
-  },
-  {
-    period: '2019 - 2020',
-    company: 'FPT SOFTWARE',
-    role: 'Junior JavaScript Developer',
-    highlights: [
-      'Worked with HTML5, CSS3 and JavaScript.',
-      'Built web applications with Angular.'
-    ],
-    tech: ['JavaScript', 'Angular', 'HTML5', 'CSS3']
-  }
-];
-
-
-export default function CVModal({ isOpen, onClose }: CVModalProps) {
-  const { t } = useLocale();
+export default function CVModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const { locale, t } = useLocale();
   const [status, setStatus] = useState('');
-  const pdfUrl = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/cv/CV_Trinh_Van_Duy_Cocos_Developer.pdf`;
-
-  const handleCopyLink = async () => {
-    const fullUrl = `${window.location.origin}${pdfUrl}`;
-    try {
-      await navigator.clipboard.writeText(fullUrl);
-      setStatus('Link copied!');
-    } catch {
-      setStatus('Unable to copy. Use your browser address bar to copy the link.');
-    }
+  const [choice, setChoice] = useState<{ ui: Locale; pdf: 'en' | 'vi' } | null>(null);
+  const pdfLocale = choice?.ui === locale ? choice.pdf : locale === 'vi' ? 'vi' : 'en';
+  const selectedFile = cvFiles[pdfLocale];
+  const pdfUrl = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/cv/${selectedFile.filename}`;
+  const copyLink = async () => {
+    try { await navigator.clipboard.writeText(new URL(pdfUrl, window.location.origin).href); setStatus('Link copied!'); }
+    catch { setStatus('Unable to copy. Use your browser address bar to copy the link.'); }
   };
+  const sectionTitle = 'flex items-center gap-2.5 font-display text-sm font-bold uppercase tracking-wide text-text';
+  const action = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-border bg-bg-primary px-3.5 py-2 text-sm font-semibold text-text-secondary transition-colors hover:border-primary/40 hover:text-text';
 
   return (
     <Modal open={isOpen} onClose={onClose} label={t('Curriculum Vitae')}>
-          {/* Modal Container */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.94, y: 15 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 15 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="relative z-10 flex max-h-[90dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-violet-500/40 bg-[#090b14] text-text shadow-[0_0_80px_rgba(139,92,246,0.35)]"
-          >
-            {/* Header */}
-            <div className="relative flex shrink-0 items-center justify-between border-b border-border/60 bg-bg-primary/90 px-4 py-4 sm:px-6 sm:py-5">
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="hidden sm:grid shrink-0 h-10 w-10 place-items-center rounded-xl border border-primary/30 bg-primary/10 text-primary">
-                  <FileText size={20} />
-                </div>
-                <div>
-                  <h2 className="font-display text-lg font-bold tracking-tight text-text sm:text-xl">
-                    {t('Curriculum Vitae')} — Trịnh Văn Duy
-                  </h2>
-                  <p className="font-code text-xs text-text-secondary">
-                    {t('Game Developer')} | {t('Cocos Creator & Playable Ads Specialist')}
-                  </p>
-                </div>
-              </div>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative flex max-h-[90dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-primary/35 bg-[#090b14] text-text shadow-2xl">
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-4 sm:px-6">
+          <div className="min-w-0">
+            <h2 className="font-display text-lg font-bold sm:text-xl">{t('Curriculum Vitae')} — {profile.name}</h2>
+            <p className="mt-1 text-sm text-text-secondary">{t(profile.role)}</p>
+          </div>
+          <button type="button" onClick={onClose} aria-label={t('Close CV')} className="grid size-11 shrink-0 place-items-center rounded-lg text-text-secondary hover:bg-white/10 hover:text-text"><X size={22} aria-hidden="true" /></button>
+        </header>
 
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label={t('Close CV')}
-                className="grid size-11 shrink-0 place-items-center rounded-lg text-text-secondary transition-colors hover:bg-white/10 hover:text-text"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            {/* Scrollable Body */}
-            <div className="custom-scrollbar overflow-y-auto p-4 sm:p-6 md:p-8 space-y-8">
-              {/* Profile Brief */}
-              <div className="grid gap-6 rounded-xl border border-primary/20 bg-gradient-to-r from-violet-950/20 via-primary/5 to-transparent p-6 md:grid-cols-12">
-                <div className="md:col-span-7 space-y-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-display text-2xl font-extrabold text-text">TRỊNH VĂN DUY</span>
-                    <span className="rounded-full bg-accent/15 px-2.5 py-0.5 font-code text-[11px] font-bold text-accent">
-                      {t('Game Developer')}
-                    </span>
-                  </div>
-                  <p className="text-xs leading-relaxed text-text-secondary">
-                    {t('I keep improving my technical and creative skills to build high-quality games, improve the player experience and contribute to my team.')}
-                  </p>
-                </div>
-
-                <div className="md:col-span-5 flex flex-col justify-center space-y-2 border-t border-border/40 pt-4 md:border-t-0 md:border-l md:pt-0 md:pl-6 text-xs text-text-secondary">
-                  <div className="flex items-center gap-2.5">
-                    <Phone size={14} className="text-primary" />
-                    <a href="tel:0369549798" className="hover:text-primary transition-colors">0369 549 798</a>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <Mail size={14} className="text-primary" />
-                    <a href="mailto:duytv0812@gmail.com" className="hover:text-primary transition-colors">duytv0812@gmail.com</a>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <MapPin size={14} className="text-primary" />
-                    <span>{t('Ha Dong, Hanoi')}</span>
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <FacebookIcon size={14} className="text-primary" />
-                    <a href="https://web.facebook.com/Duytv98" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">fb.com/Duytv98</a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Education & Software Grid */}
-              <div className="grid gap-6 md:grid-cols-2">
-                {/* Education */}
-                <div className="rounded-xl border border-border/70 bg-[#0c0e1a] p-5 space-y-3">
-                  <div className="flex items-center gap-2.5 text-primary">
-                    <GraduationCap size={18} />
-                    <h3 className="font-display text-sm font-bold uppercase tracking-wider text-text">{t('Education')}</h3>
-                  </div>
-                  <div className="border-l-2 border-primary/40 pl-4 space-y-1">
-                    <span className="font-code text-[11px] font-bold text-accent">2016 - 2020</span>
-                    <h4 className="font-display text-sm font-semibold text-text">{t('FPT – Greenwich Vietnam')}</h4>
-                    <p className="text-xs text-text-secondary">{t('Degree: Information Technology')}</p>
-                    <p className="text-xs font-semibold text-primary">{t('Classification: Distinction')}</p>
-                  </div>
-                </div>
-
-                {/* Software / Skills */}
-                <div className="rounded-xl border border-border/70 bg-[#0c0e1a] p-5 space-y-3">
-                  <div className="flex items-center gap-2.5 text-accent">
-                    <Code2 size={18} />
-                    <h3 className="font-display text-sm font-bold uppercase tracking-wider text-text">{t('Tech Stack')}</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {['Cocos Creator', 'Cocos2d', 'Unity', 'VS Code', 'Git', 'Firebase', 'PixiJS', 'CreateJS', 'PlayFab', 'TypeScript', 'JavaScript'].map((tech) => (
-                      <span
-                        key={tech}
-                        className="rounded-md border border-border bg-bg-primary/80 px-2.5 py-1 font-code text-[11px] font-medium text-[#B9C6D8]"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Work Experience */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2.5 text-purple">
-                  <Briefcase size={18} />
-                  <h3 className="font-display text-sm font-bold uppercase tracking-wider text-text">{t('Work experience')}</h3>
-                </div>
-
-                <div className="space-y-4">
-                  {experiences.map((exp) => (
-                    <div
-                      key={exp.company}
-                      className="rounded-xl border border-border/60 bg-[#0b0e1b] p-5 transition-all hover:border-violet-500/40"
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-3">
-                        <div>
-                          <span className="font-display text-base font-bold text-text">{exp.company}</span>
-                          <span className="ml-2 font-code text-xs text-primary">• {t(exp.role)}</span>
-                        </div>
-                        <span className="rounded-md border border-primary/30 bg-primary/10 px-2.5 py-0.5 font-code text-[11px] font-bold text-primary">
-                          {t(exp.period)}
-                        </span>
-                      </div>
-
-                      <ul className="mt-3 space-y-1.5 list-disc list-inside text-xs text-text-secondary">
-                        {exp.highlights.map((item, idx) => (
-                          <li key={idx} className="leading-relaxed">{t(item)}</li>
-                        ))}
-                      </ul>
-
-                      <div className="mt-3 flex flex-wrap gap-1.5 pt-1">
-                        {exp.tech.map((tech) => (
-                          <span key={tech} className="rounded bg-white/5 px-2 py-0.5 font-code text-[10px] text-text-muted">
-                            #{t(tech)}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+        <div className="min-h-0 space-y-7 overflow-y-auto p-4 sm:p-6 md:p-8">
+          <section className="rounded-xl border border-primary/20 bg-primary/5 p-5" aria-label={t('Professional summary')}>
+            <h3 className={sectionTitle}><FileText size={18} className="shrink-0 text-primary" aria-hidden="true" />{t('Professional summary')}</h3>
+            <p className="mt-3 text-sm leading-relaxed text-text-secondary">{t(profile.summary)}</p>
+            <div className="mt-5 grid gap-3 border-t border-border pt-4 text-sm text-text-secondary sm:grid-cols-2">
+              <a href={`tel:${profile.phone}`} className="flex min-h-11 items-center gap-2.5 hover:text-primary"><Phone size={16} className="shrink-0 text-primary" aria-hidden="true" />{profile.phoneDisplay}</a>
+              <a href={`mailto:${profile.email}`} className="flex min-h-11 min-w-0 items-center gap-2.5 break-all hover:text-primary"><Mail size={16} className="shrink-0 text-primary" aria-hidden="true" />{profile.email}</a>
+              <span className="flex min-h-11 items-center gap-2.5"><MapPin size={16} className="shrink-0 text-primary" aria-hidden="true" />{t(profile.location)}</span>
+              <div className="flex flex-wrap items-center gap-4">
+                <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 hover:text-primary"><LinkedinIcon size={16} />LinkedIn</a>
+                <a href={profile.github} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 hover:text-primary"><GithubIcon size={16} />GitHub</a>
               </div>
             </div>
+          </section>
 
-            <p role="status" className={status ? "px-6 py-2 text-sm text-primary" : "sr-only"}>{status && t(status)}</p>
-            {/* Footer Action Buttons */}
-            <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border/60 bg-bg-primary/95 p-4 md:px-8">
-              <div className="flex items-center gap-2">
-                <Sparkles size={16} className="text-accent" />
-                <span className="text-xs text-text-secondary hidden sm:inline">{t('Official CV (PDF, Vietnamese)')}</span>
-              </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <section className="rounded-xl border border-border bg-card p-5">
+              <h3 className={sectionTitle}><GraduationCap size={18} className="shrink-0 text-primary" aria-hidden="true" />{t('Education')}</h3>
+              <p className="mt-3 text-xs font-semibold text-primary">{profile.education.period}</p>
+              <h4 className="mt-1 font-display font-semibold">{t(profile.education.school)}</h4>
+              <p className="mt-2 text-sm text-text-secondary">{t(profile.education.degree)}</p>
+              <p className="mt-1 text-sm text-primary">{t(profile.education.classification)}</p>
+            </section>
+            <section className="rounded-xl border border-accent/25 bg-accent/5 p-5">
+              <h3 className={sectionTitle}><Trophy size={18} className="shrink-0 text-accent" aria-hidden="true" />{t('Honors & Awards')}</h3>
+              <p className="mt-3 text-xs font-semibold text-accent">{profile.award.year}</p>
+              <h4 className="mt-1 font-display font-semibold">{t(profile.award.title)}</h4>
+              <p className="mt-2 text-sm text-text-secondary">{profile.award.company}</p>
+            </section>
+          </div>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleCopyLink}
-                  className="flex items-center gap-2 rounded-lg border border-border bg-bg-primary px-3.5 py-2 font-code text-xs font-semibold text-text-secondary transition-colors hover:border-primary/40 hover:text-text"
-                >
-                  {status === 'Link copied!' ? <Check size={14} className="text-accent" /> : <Copy size={14} />}
-                  <span>{t('Copy CV link')}</span>
-                </button>
-
-                <a
-                  href={pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3.5 py-2 font-code text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
-                >
-                  <ExternalLink size={14} />
-                  <span>{t('View online')}</span>
-                </a>
-
-                <a
-                  href={pdfUrl}
-                  download="CV_Trinh_Van_Duy_Cocos_Developer.pdf"
-                  className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 font-code text-xs font-bold text-bg-primary shadow-[0_0_15px_rgba(124,92,255,0.4)] transition-opacity hover:opacity-95"
-                >
-                  <Download size={14} />
-                  <span>{t('Download PDF')}</span>
-                </a>
-              </div>
+          <section>
+            <h3 className={sectionTitle}><Briefcase size={18} className="shrink-0 text-purple" aria-hidden="true" />{t('Work experience')}</h3>
+            <div className="mt-4 space-y-4">
+              {profile.experience.map((job) => (
+                <article key={job.id} className="rounded-xl border border-border bg-card p-5">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div><h4 className="font-display text-base font-bold">{job.company}</h4><p className="mt-1 text-sm text-primary">{t(job.role)}</p></div>
+                    <span className="rounded-md border border-primary/25 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">{t(job.period)}</span>
+                  </div>
+                  <ul className="mt-3 list-disc space-y-2 pl-4 text-sm leading-relaxed text-text-secondary">{job.highlights.map((point) => <li key={point}>{t(point)}</li>)}</ul>
+                  <div className="mt-4 flex flex-wrap gap-2">{job.tech.map((tech) => <span key={tech} className="rounded-md border border-border bg-bg-primary px-2 py-1 text-xs text-text-secondary">{tech}</span>)}</div>
+                </article>
+              ))}
             </div>
-          </motion.div>
+          </section>
+
+          <section>
+            <h3 className={sectionTitle}><Code2 size={18} className="shrink-0 text-accent" aria-hidden="true" />{t('Tech Stack')}</h3>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">{profile.skillGroups.map((group) => (
+              <div key={group.title} className="rounded-xl border border-border bg-card p-4">
+                <h4 className="font-display text-sm font-semibold text-primary">{t(group.title)}</h4>
+                <ul className="mt-3 flex flex-wrap gap-2">{group.items.map((item) => <li key={item} className="rounded-md border border-border px-2 py-1 text-xs leading-relaxed text-text-secondary">{t(item)}</li>)}</ul>
+              </div>
+            ))}</div>
+          </section>
+        </div>
+
+        <footer className="shrink-0 space-y-3 border-t border-border bg-bg-primary p-4 sm:px-6">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <label className="flex min-h-11 items-center gap-2 text-sm text-text-secondary">
+              <span>{t('CV language')}</span>
+              <select value={pdfLocale} onChange={(event) => { setChoice({ ui: locale, pdf: event.target.value as 'en' | 'vi' }); setStatus(''); }} className="min-h-11 rounded-lg border border-border bg-card px-3 text-sm text-text">
+                <option value="en" lang="en">English</option><option value="vi" lang="vi">Tiếng Việt</option>
+              </select>
+            </label>
+            <span className="text-xs text-text-secondary">{t(pdfLocale === 'vi' ? 'Official CV (PDF, Vietnamese)' : 'Official CV (PDF, English)')}</span>
+          </div>
+          {locale === 'zh' && pdfLocale === 'en' && <p className="text-xs text-text-secondary">{t('English PDF is selected for the Chinese interface.')}</p>}
+          <p role="status" className={status ? 'text-xs text-primary' : 'sr-only'}>{status && t(status)}</p>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={copyLink} className={action}>{status === 'Link copied!' ? <Check size={15} aria-hidden="true" /> : <Copy size={15} aria-hidden="true" />}{t('Copy CV link')}</button>
+            <a href={pdfUrl} target="_blank" rel="noopener noreferrer" hrefLang={pdfLocale} className={action}><ExternalLink size={15} aria-hidden="true" />{t('View online')}</a>
+            <a href={pdfUrl} download={selectedFile.filename} hrefLang={pdfLocale} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-bg-primary hover:brightness-110"><Download size={15} aria-hidden="true" />{t('Download PDF')}</a>
+          </div>
+        </footer>
+      </motion.div>
     </Modal>
   );
 }

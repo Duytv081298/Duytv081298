@@ -3,10 +3,11 @@
 import { useReducedMotion } from '@/lib/useReducedMotion';
 
 import { useLocale } from '@/components/i18n/LocaleProvider';
+import { profile } from '@/data/profile';
 import { useState } from 'react';
 import { Download, Gamepad2, Mail, MapPin, Send } from 'lucide-react';
 import { motion } from 'motion/react';
-import { FacebookIcon, GithubIcon } from '@/components/ui/BrandIcons';
+import { FacebookIcon, GithubIcon, LinkedinIcon } from '@/components/ui/BrandIcons';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import SectionHeader from '@/components/ui/SectionHeader';
 import CVModal from '@/components/ui/CVModal';
@@ -91,6 +92,8 @@ export default function ContactSection() {
                 </span>
                 <Send size={11} className="text-text-muted opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true" />
               </a>
+
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center gap-3 rounded-lg border border-border bg-bg-primary/35 px-4 text-sm font-semibold text-text-secondary transition-colors hover:border-primary/45 hover:text-text"><LinkedinIcon size={16} />LinkedIn</a>
 
               <a
                 href="https://web.facebook.com/Duytv98"

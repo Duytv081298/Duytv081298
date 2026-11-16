@@ -1,5 +1,6 @@
 'use client';
 
+import { profile } from '@/data/profile';
 import { useLocale } from '@/components/i18n/LocaleProvider';
 import { Flame, GitBranch, Hexagon, Orbit, PackageOpen, PanelsTopLeft } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -109,10 +110,10 @@ const workflowTools = [
   { name: 'HTML5', color: '#E34F26', icon: <HtmlMark className="size-5" /> },
   { name: 'Firebase', color: '#FFCA28', icon: <Flame className="size-5" strokeWidth={1.9} aria-hidden="true" /> },
   { name: 'Node.js', color: '#67A84B', icon: <Hexagon className="size-5" strokeWidth={1.9} aria-hidden="true" /> },
-  { name: 'Webpack', color: '#8ED6FB', icon: <PackageOpen className="size-5" strokeWidth={1.9} aria-hidden="true" /> },
+  { name: 'PlayFab', color: '#8ED6FB', icon: <PackageOpen className="size-5" strokeWidth={1.9} aria-hidden="true" /> },
   { name: 'Git', color: '#F05032', icon: <GitBranch className="size-5" strokeWidth={1.9} aria-hidden="true" /> },
-  { name: 'TexturePacker', color: '#4F8EF7', icon: <PanelsTopLeft className="size-5" strokeWidth={1.9} aria-hidden="true" /> },
-  { name: 'Spine', color: '#C46BFF', icon: <Orbit className="size-5" strokeWidth={1.9} aria-hidden="true" /> },
+  { name: 'PixiJS', color: '#4F8EF7', icon: <PanelsTopLeft className="size-5" strokeWidth={1.9} aria-hidden="true" /> },
+  { name: 'CreateJS', color: '#C46BFF', icon: <Orbit className="size-5" strokeWidth={1.9} aria-hidden="true" /> },
 ] as const;
 
 export default function TechStackSection() {
@@ -154,6 +155,14 @@ export default function TechStackSection() {
           })}
         </div>
 
+        <div className="mt-7 grid gap-4 sm:grid-cols-2">
+          {profile.skillGroups.slice(2).map((group) => (
+            <article key={group.title} className="rounded-xl border border-border bg-card/55 p-5">
+              <h3 className="font-display text-base font-semibold text-primary">{t(group.title)}</h3>
+              <ul className="mt-3 flex flex-wrap gap-2">{group.items.map((item) => <li key={item} className="rounded-md border border-border px-2.5 py-1 text-xs leading-relaxed text-text-secondary">{t(item)}</li>)}</ul>
+            </article>
+          ))}
+        </div>
         <div className="mt-7">
           <p className="mb-2.5 font-code text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
             {t('Tools & Workflow')}

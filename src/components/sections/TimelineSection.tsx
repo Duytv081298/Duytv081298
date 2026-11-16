@@ -1,5 +1,6 @@
 'use client';
 
+import { profile } from '@/data/profile';
 import { useLocale } from '@/components/i18n/LocaleProvider';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -11,6 +12,7 @@ import {
   GraduationCap, 
   Building2, 
   Briefcase, 
+  Trophy,
   CheckCircle2
 } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -18,96 +20,31 @@ import SectionHeader from '@/components/ui/SectionHeader';
 interface TimelineItem {
   id: string;
   year: string;
-  category: 'work' | 'education';
+  category: 'work' | 'education' | 'award';
   company: string;
   role: string;
-  highlights: string[];
-  tech: string[];
+  highlights: readonly string[];
+  tech: readonly string[];
   color: string;
   icon: typeof Gamepad2;
 }
 
+const workStyles = [
+  { color: '#00D97E', icon: Wrench }, { color: '#3EA6FF', icon: Gamepad2 },
+  { color: '#9B74FF', icon: Layers }, { color: '#FF6B6B', icon: Code2 },
+];
+const workTimeline = profile.experience.map((job, index) => ({ ...job, year: job.period, category: 'work' as const, ...workStyles[index] }));
 const timeline: TimelineItem[] = [
-  {
-    id: 'pixon',
-    year: '2024 – Present',
-    category: 'work',
-    company: 'PIXON',
-    role: 'Game Developer',
-    highlights: [
-      'Created playable ads with Cocos Creator and Unity.',
-      'Built tools to automate playable ad exports across platforms.'
-    ],
-    tech: ['Cocos Creator', 'Unity', 'Playable Ads', 'Tool Build', 'TypeScript'],
-    color: '#00D97E',
-    icon: Wrench,
-  },
-  {
-    id: 'game-zoka',
-    year: '2023 - 2024',
-    category: 'work',
-    company: 'GAME ZOKA',
-    role: 'Game Developer',
-    highlights: [
-      'Researched, evaluated and selected games for development.',
-      'Coordinated game development tasks within the team.',
-      'Developed Facebook Instant Games with Cocos Creator.',
-      'Used PlayFab for player data and leaderboards.',
-      'Built frontends for real-time card games with Cocos Creator.'
-    ],
-    tech: ['Cocos Creator', 'Facebook Instant Games', 'PlayFab', 'Realtime Multiplayer'],
-    color: '#3EA6FF',
-    icon: Gamepad2,
-  },
-  {
-    id: 'sonat-studio',
-    year: '2021 - 2022',
-    category: 'work',
-    company: 'SONAT STUDIO',
-    role: 'Game Developer',
-    highlights: [
-      'Created size-optimized playable ads with PixiJS and CreateJS.',
-      'Developed Facebook Instant Games.',
-      'Developed puzzle games with Unity.'
-    ],
-    tech: ['PixiJS', 'CreateJS', 'Facebook Instant Games', 'Unity', 'C#'],
-    color: '#9B74FF',
-    icon: Layers,
-  },
-  {
-    id: 'fpt-software',
-    year: '2019 - 2020',
-    category: 'work',
-    company: 'FPT SOFTWARE',
-    role: 'Junior JavaScript Developer',
-    highlights: [
-      'Worked with HTML5, CSS3 and JavaScript.',
-      'Built web applications with Angular.'
-    ],
-    tech: ['JavaScript', 'Angular', 'HTML5', 'CSS3'],
-    color: '#FF6B6B',
-    icon: Code2,
-  },
-  {
-    id: 'fpt-greenwich',
-    year: '2016 - 2020',
-    category: 'education',
-    company: 'FPT – Greenwich Vietnam',
-    role: 'BSc in Information Technology',
-    highlights: [
-      'Information Technology',
-      'Graduated with Distinction',
-      'Built a strong foundation in computer science and game programming.'
-    ],
-    tech: ['Information Technology', 'BSc Honors', 'Graduated with Distinction'],
-    color: '#FFD93D',
-    icon: GraduationCap,
-  },
+  workTimeline[0],
+  { id: 'pixon-award', year: profile.award.year, category: 'award', company: profile.award.company, role: profile.award.title, highlights: [], tech: [], color: '#FFD93D', icon: Trophy },
+  ...workTimeline.slice(1),
+  { id: 'fpt-greenwich', year: profile.education.period, category: 'education', company: profile.education.school, role: profile.education.degree,
+    highlights: ['Information Technology', 'Graduated with an Excellent classification'], tech: ['Information Technology'], color: '#FFD93D', icon: GraduationCap },
 ];
 
 export default function TimelineSection() {
   const { t } = useLocale();
-  const [filter, setFilter] = useState<'all' | 'work' | 'education'>('all');
+  const [filter, setFilter] = useState<'all' | 'work' | 'education' | 'award'>('all');
 
   const filteredTimeline = timeline.filter(
     (item) => filter === 'all' || item.category === filter
@@ -132,13 +69,14 @@ export default function TimelineSection() {
             { id: 'all', label: 'All milestones', count: timeline.length },
             { id: 'work', label: 'Work experience', count: 4 },
             { id: 'education', label: 'Education', count: 1 },
+            { id: 'award', label: 'Honors & Awards', count: 1 },
           ].map((tab) => {
             const isActive = filter === tab.id;
             return (
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setFilter(tab.id as 'all' | 'work' | 'education')}
+                onClick={() => setFilter(tab.id as 'all' | 'work' | 'education' | 'award')}
                 aria-pressed={isActive}
                 className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                   isActive
@@ -209,7 +147,7 @@ export default function TimelineSection() {
                         {/* Header Badge */}
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
                           <div className="flex items-center gap-2">
-                            {item.category === 'education' ? (
+                            {item.category === 'award' ? (<Trophy className="size-4" style={{ color: item.color }} aria-hidden="true" />) : item.category === 'education' ? (
                               <GraduationCap className="size-4" style={{ color: item.color }} />
                             ) : (
                               <Building2 className="size-4" style={{ color: item.color }} />
@@ -251,7 +189,7 @@ export default function TimelineSection() {
                         </ul>
 
                         {/* Tech Stack Tags */}
-                        <div className="mt-4 flex flex-wrap gap-1.5 pt-2 border-t border-white/5">
+                        <div className={item.tech.length ? "mt-4 flex flex-wrap gap-1.5 pt-2 border-t border-white/5" : "hidden"}>
                           {item.tech.map((tech) => (
                             <span
                               key={tech}

@@ -3,11 +3,12 @@
 import { useReducedMotion } from '@/lib/useReducedMotion';
 
 import GameArtwork from '@/components/game/GameArtwork';
+import { profile } from '@/data/profile';
 import { useState } from 'react';
 import { useLocale } from '@/components/i18n/LocaleProvider';
 import { motion } from 'motion/react';
 import { BriefcaseBusiness, Download, Gamepad2, Layers3, Play, Zap } from 'lucide-react';
-import { GithubIcon, FacebookIcon } from '@/components/ui/BrandIcons';
+import { GithubIcon, FacebookIcon, LinkedinIcon } from '@/components/ui/BrandIcons';
 import MagneticButton from '@/components/ui/MagneticButton';
 import GlowOrb from '@/components/effects/GlowOrb';
 import CVModal from '@/components/ui/CVModal';
@@ -15,7 +16,7 @@ import { playableAds } from '@/data/playableAds';
 
 const stats = [
   { value: '30+', label: 'projects', color: '#3EA6FF', Icon: Layers3 },
-  { value: '5+', label: 'years', color: '#00DFA2', Icon: Zap },
+  { value: profile.years, label: 'years', color: '#00DFA2', Icon: Zap },
   { value: '4', label: 'companies', color: '#9B74FF', Icon: BriefcaseBusiness },
   { value: 'HTML5', label: 'cocos', color: '#8AB4FF', Icon: Gamepad2 },
 ];
@@ -146,6 +147,7 @@ export default function HeroSection() {
               >
                 <GithubIcon size={17} />
               </a>
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="grid size-11 place-items-center rounded-lg text-text-secondary transition-colors hover:bg-primary/10 hover:text-primary"><LinkedinIcon size={18} /></a>
               <a
                 href="https://web.facebook.com/Duytv98"
                 target="_blank"

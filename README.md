@@ -159,8 +159,10 @@ English. Chinese variants currently use the Simplified Chinese translation.
 Changing language updates the document language, persists across visits when
 storage is available and synchronizes other open tabs. If storage is blocked,
 selection still works for the current session. Static HTML and social metadata
-are exported in English; language selection happens after hydration. The original
-downloadable CV is in Vietnamese; its on-page summary supports all three languages.
+are exported in English; language selection happens after hydration. The supplied English and Vietnamese PDFs are available unchanged. The CV dialog follows
+the interface language (Vietnamese → Vietnamese PDF; English/Chinese → English PDF),
+and includes an explicit language selector for viewing, downloading or copying either CV.
+The on-page summary, experience, skills and award support all three interface languages.
 Embedded game builds retain their original game content and language.
 
 Navigation uses real section links, visible keyboard focus and a skip link. Native
@@ -194,3 +196,14 @@ Translation copy lives in `src/components/i18n/messages.ts`; case study narrativ
 live in `src/components/i18n/game-copy.ts`. Brand and technology names retain their
 original spelling. The static export uses trailing-slash routes so detail pages
 can be refreshed directly on GitHub Pages.
+
+
+### CV source of truth
+
+`src/data/profile.ts` holds the shared professional summary, four employers, education,
+skills and the 2024 PIXON award, aligned with the supplied November 2026 CVs. Career
+and CV views read this shared source. Original PDF files live at
+`public/cv/TRINH-VAN-DUY_EN.pdf` and `public/cv/TRINH-VAN-DUY_VN.pdf`.
+Legacy Vietnamese PDF URLs also serve the updated Vietnamese document. Performance
+cards now reflect the CV's 60 FPS target, 2–5 MB playable budgets, 70% reduction in
+manual deployment time and 6+ years of experience.

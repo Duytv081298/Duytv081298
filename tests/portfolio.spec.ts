@@ -199,3 +199,56 @@ test('unavailable store artwork falls back to usable game tiles', async ({ page 
   await tile.click();
   await expect(page.getByRole('dialog')).toBeVisible();
 });
+
+for (const scenario of [
+  { ui: 'en', pdf: 'en', cv: 'Download CV', download: 'Download PDF', copy: 'Copy CV link', online: 'View online', award: 'Employee of the Year 2024' },
+  { ui: 'vi', pdf: 'vi', cv: 'Tải CV', download: 'Tải PDF', copy: 'Sao chép liên kết CV', online: 'Xem trực tuyến', award: 'Nhân viên xuất sắc của năm 2024' },
+  { ui: 'zh', pdf: 'en', cv: '下载简历', download: '下载 PDF', copy: '复制简历链接', online: '在线查看', award: '2024 年度优秀员工' },
+]) {
+  test(`updated CV matches the ${scenario.ui} interface and supports both original PDFs`, async ({ page, context }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto('/');
+    await page.getByRole('combobox').selectOption(scenario.ui);
+    await page.locator('#hero').getByRole('button', { name: scenario.cv, exact: true }).click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('combobox')).toHaveValue(scenario.pdf);
+    await expect(dialog.getByRole('heading', { name: scenario.award, exact: true })).toBeVisible();
+    await expect(dialog.getByText(/70%/)).toBeVisible();
+    const firstFile = `TRINH-VAN-DUY_${scenario.pdf === 'vi' ? 'VN' : 'EN'}.pdf`;
+    await expect(dialog.getByRole('link', { name: scenario.download, exact: true })).toHaveAttribute('href', `/cv/${firstFile}`);
+    const audit = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(audit.violations.map(({ id, nodes }) => ({ id, targets: nodes.map((node) => node.target) }))).toEqual([]);
+    expect(await dialog.evaluate((node) => node.scrollWidth <= node.clientWidth)).toBe(true);
+    const alternate = scenario.pdf === 'en' ? 'vi' : 'en';
+    const alternateFile = `TRINH-VAN-DUY_${alternate === 'vi' ? 'VN' : 'EN'}.pdf`;
+    await dialog.getByRole('combobox').selectOption(alternate);
+    await expect(dialog.getByRole('link', { name: scenario.online, exact: true })).toHaveAttribute('href', `/cv/${alternateFile}`);
+    await dialog.getByRole('button', { name: scenario.copy, exact: true }).click();
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain(`/cv/${alternateFile}`);
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      dialog.getByRole('link', { name: scenario.download, exact: true }).click(),
+    ]);
+    expect(download.suggestedFilename()).toBe(alternateFile);
+    expect(await download.failure()).toBeNull();
+  });
+}
+
+test('English, Vietnamese and legacy PDF URLs serve the exact supplied CVs', async ({ request }) => {
+  const { readFile } = await import('node:fs/promises');
+  for (const [url, source] of [
+    ['/cv/TRINH-VAN-DUY_EN.pdf', 'public/cv/TRINH-VAN-DUY_EN.pdf'],
+    ['/cv/TRINH-VAN-DUY_VN.pdf', 'public/cv/TRINH-VAN-DUY_VN.pdf'],
+    ['/cv/CV_Trinh_Van_Duy_Cocos_Developer.pdf', 'public/cv/TRINH-VAN-DUY_VN.pdf'],
+    ['/CV_TrinhVanDuy.pdf', 'public/cv/TRINH-VAN-DUY_VN.pdf'],
+  ]) {
+    const response = await request.get(url);
+    expect(response.ok()).toBe(true);
+    const data = await response.body();
+    expect(data.subarray(0, 5).toString()).toBe('%PDF-');
+    expect(data.equals(await readFile(source))).toBe(true);
+  }
+});
