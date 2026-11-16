@@ -130,12 +130,12 @@
 <table align="center">
   <tr>
     <td width="25%" align="center">
-      <h2>📅 5+</h2>
+      <h2>📅 6+</h2>
       <sub>Years Experience</sub>
     </td>
     <td width="25%" align="center">
-      <h2>🚀 10+</h2>
-      <sub>Projects Completed</sub>
+      <h2>🚀 30+</h2>
+      <sub>Playable Ads Showcased</sub>
     </td>
     <td width="25%" align="center">
       <h2>❤️ 100%</h2>
@@ -148,7 +148,7 @@
   </tr>
 </table>
 
-<p align="center">© 2025 Duytv · Built with 💜 and ☕</p>
+<p align="center">© 2026 Duytv · Built with 💜 and ☕</p>
 
 ## Portfolio language and accessibility
 
