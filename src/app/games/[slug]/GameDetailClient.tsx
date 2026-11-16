@@ -235,6 +235,8 @@ export default function GameDetailClient({ game: source }: GameDetailClientProps
           </RevealOnScroll>
         </div>
 
+        <p className="rounded-lg border border-border bg-card p-4 text-sm text-text-secondary" role="note">{locale === 'vi' ? 'Lưu ý: Các chỉ số tối ưu hóa theo từng dự án bên dưới là dữ liệu minh họa trong hồ sơ và chưa được đối chiếu với báo cáo benchmark gốc.' : locale === 'zh' ? '注意：以下各项目优化数据尚未与原始基准测试报告核对，请勿视为已验证的结果。' : 'Evidence note: Project-specific optimization figures below have not been cross-checked against original benchmark reports and should not be treated as independently verified results.'}</p>
+
         {/* Performance Optimization */}
         <div>
           <RevealOnScroll>
