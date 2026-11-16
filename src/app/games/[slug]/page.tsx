@@ -18,6 +18,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${game.title} — Case Study | Trịnh Văn Duy`,
     description: game.description,
+    alternates: { canonical: `/Duytv081298/games/${game.slug}/` },
+    openGraph: { title: `${game.title} — Engineering Case Study`, description: game.description, type: 'article', url: `/Duytv081298/games/${game.slug}/` },
   };
 }
 
