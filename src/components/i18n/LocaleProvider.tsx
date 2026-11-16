@@ -8,6 +8,7 @@ export type { Locale } from './locale';
 
 type LocaleContextValue = {
   locale: Locale;
+  ready: boolean;
   setLocale: (locale: Locale) => void;
   t: (key: string, values?: Record<string, string | number>) => string;
 };
@@ -35,9 +36,13 @@ function subscribe(notify: () => void) {
   };
 }
 const serverLocale = (): Locale => 'en';
+const subscribeHydration = () => () => {};
+const clientReady = () => true;
+const serverReady = () => false;
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const locale = useSyncExternalStore(subscribe, getLocale, serverLocale);
+  const ready = useSyncExternalStore(subscribeHydration, clientReady, serverReady);
   useEffect(() => { document.documentElement.lang = locale === 'zh' ? 'zh-CN' : locale; }, [locale]);
   const setLocale = (next: Locale) => {
     if (!isLocale(next)) return;
@@ -51,7 +56,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     return translated.replace(/\{(\w+)\}/g, (token, name: string) => String(values?.[name] ?? token));
   };
   return (
-    <LocaleContext.Provider value={{ locale, setLocale, t }}>
+    <LocaleContext.Provider value={{ locale, ready, setLocale, t }}>
       <MotionConfig reducedMotion="user">
         <a href="#main-content" className="skip-link">{t('Skip to content')}</a>
         {children}

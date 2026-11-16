@@ -1,23 +1,24 @@
 'use client';
 
-import { useEffect, useRef, useSyncExternalStore, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, useSyncExternalStore, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 
 const subscribe = () => () => {};
 
 /** Native modal semantics provide focus containment, inert background and Escape. */
-export default function Modal({ open, onClose, label, children }: {
+export default function Modal({ open, onClose, label, children, returnFocus }: {
   open: boolean;
   onClose: () => void;
   label: string;
   children: ReactNode;
+  returnFocus?: RefObject<HTMLElement | null>;
 }) {
   const mounted = useSyncExternalStore(subscribe, () => true, () => false);
   const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const dialog = ref.current;
     if (!mounted || !open || !dialog) return;
-    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousFocus = returnFocus?.current ?? document.activeElement as HTMLElement | null;
     const previousOverflow = document.body.style.overflow;
     dialog.showModal();
     document.body.style.overflow = 'hidden';
@@ -26,7 +27,7 @@ export default function Modal({ open, onClose, label, children }: {
       document.body.style.overflow = previousOverflow;
       previousFocus?.focus({ preventScroll: true });
     };
-  }, [mounted, open]);
+  }, [mounted, open, returnFocus]);
 
   if (!mounted || !open) return null;
   return createPortal(

@@ -90,6 +90,8 @@ export default function PlayableAdsSection() {
   const [activeBuildIndex, setActiveBuildIndex] = useState<number>(0);
   const [reloadKey, setReloadKey] = useState<number>(0);
   const [highlightedAdId, setHighlightedAdId] = useState<string | null>(null);
+  const playerOpener = useRef<HTMLElement | null>(null);
+  const playerOpen = useRef(false);
   const pendingPlayTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const cancelPendingPlay = useCallback(() => {
@@ -98,6 +100,8 @@ export default function PlayableAdsSection() {
   }, []);
 
   const openPlayer = useCallback((ad: PlayableAd) => {
+    if (!playerOpen.current) playerOpener.current = document.activeElement as HTMLElement | null;
+    playerOpen.current = true;
     cancelPendingPlay();
     setHighlightedAdId(null);
     setActiveAd(ad);
@@ -175,6 +179,7 @@ export default function PlayableAdsSection() {
   };
 
   const closePlayer = () => {
+    playerOpen.current = false;
     cancelPendingPlay();
     setActiveAd(null);
     setIsFullscreen(false);
@@ -346,7 +351,7 @@ export default function PlayableAdsSection() {
         )}
       </div>
 
-      <Modal open={!!activeAd} onClose={closePlayer} label={activeAd?.title ?? t('Playable Ads')}>
+      <Modal open={!!activeAd} returnFocus={playerOpener} onClose={closePlayer} label={activeAd?.title ?? t('Playable Ads')}>
         {activeAd && (
             <motion.div
               className={`relative z-10 flex flex-col md:flex-row items-stretch bg-[#141720] border border-border/80 overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] ${

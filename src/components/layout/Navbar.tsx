@@ -17,12 +17,12 @@ const navItems = [
 ];
 
 export function LanguageSelect() {
-  const { locale, setLocale, t } = useLocale();
+  const { locale, ready, setLocale, t } = useLocale();
   return (
     <label className="flex min-h-11 items-center gap-2 rounded-lg border border-white/15 bg-card px-3 text-text-secondary focus-within:ring-2 focus-within:ring-primary">
       <Languages size={16} aria-hidden="true" />
       <span className="sr-only">{t('language')}</span>
-      <select value={locale} onChange={(event) => setLocale(event.target.value as Locale)}
+      <select disabled={!ready} value={locale} onChange={(event) => setLocale(event.target.value as Locale)}
         className="min-h-11 max-w-[106px] cursor-pointer bg-card text-sm text-text">
         <option value="en" lang="en">English</option>
         <option value="vi" lang="vi">Tiếng Việt</option>

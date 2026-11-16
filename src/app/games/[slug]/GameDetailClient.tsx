@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'motion/react';
+import { useReducedMotion } from '@/lib/useReducedMotion';
 import Link from 'next/link';
 import { useLocale } from '@/components/i18n/LocaleProvider';
 import { localizeGame } from '@/components/i18n/game-copy';
@@ -65,6 +66,7 @@ function OptimizationCard({
 export default function GameDetailClient({ game: source }: GameDetailClientProps) {
   const { locale, t } = useLocale();
   const game = localizeGame(source, locale);
+  const reduceMotion = useReducedMotion();
   return (
     <main id="main-content" tabIndex={-1} className="min-h-screen bg-bg-primary text-text">
       <GridBackground />
@@ -84,7 +86,7 @@ export default function GameDetailClient({ game: source }: GameDetailClientProps
           <div className="mb-6 flex justify-end"><LanguageSelect /></div>
           {/* Back Button */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            initial={reduceMotion ? false : { opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
           >
@@ -102,7 +104,7 @@ export default function GameDetailClient({ game: source }: GameDetailClientProps
             {/* Cover */}
             <motion.div
               className="w-full lg:w-96 aspect-[16/10] rounded-2xl overflow-hidden shrink-0 shadow-2xl"
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
@@ -121,7 +123,7 @@ export default function GameDetailClient({ game: source }: GameDetailClientProps
             {/* Details */}
             <motion.div
               className="flex-1"
-              initial={{ opacity: 0, y: 20 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
