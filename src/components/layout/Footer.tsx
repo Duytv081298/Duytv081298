@@ -1,9 +1,11 @@
 'use client';
 
 import type { MouseEvent } from 'react';
+import { useLocale } from '@/components/i18n/LocaleProvider';
 import { ArrowUp, Gamepad2 } from 'lucide-react';
 
 export default function Footer() {
+  const { t } = useLocale();
   const scrollToTop = (e: MouseEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -51,9 +53,9 @@ export default function Footer() {
           type="button"
           onClick={scrollToTop}
           className="group relative z-30 flex min-h-11 cursor-pointer pointer-events-auto items-center gap-2.5 rounded-xl border border-white/15 bg-white/5 px-4 py-2 font-code text-xs font-bold uppercase tracking-wider text-text-secondary transition-all hover:border-primary/50 hover:bg-primary/15 hover:text-primary active:scale-95 shadow-md"
-          aria-label="Back to top"
+          aria-label={t("top")}
         >
-          <span>Back to top</span>
+          <span>{t("top")}</span>
           <ArrowUp size={16} className="transition-transform group-hover:-translate-y-1 text-primary" aria-hidden="true" />
         </button>
       </div>
