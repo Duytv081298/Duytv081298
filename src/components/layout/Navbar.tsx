@@ -1,21 +1,24 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useLocale, type Locale } from '@/components/i18n/LocaleProvider';
+import { Languages } from 'lucide-react';
 import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Gamepad2, Mail, Menu, X, Home, Box, Layers3, Flag } from 'lucide-react';
 import { FacebookIcon, GithubIcon, InstagramIcon } from '@/components/ui/BrandIcons';
 
 const navItems = [
-  { label: 'Home', href: '#hero', Icon: Home },
-  { label: 'Playable Ads', href: '#playable', Icon: Gamepad2 },
-  { label: 'Games', href: '#games', Icon: Box },
-  { label: 'Tech Stack', href: '#tech', Icon: Layers3 },
-  { label: 'Journey', href: '#career', Icon: Flag },
-  { label: 'Contact', href: '#contact', Icon: Mail },
+  { label: 'home', href: '#hero', Icon: Home },
+  { label: 'playable', href: '#playable', Icon: Gamepad2 },
+  { label: 'games', href: '#games', Icon: Box },
+  { label: 'tech', href: '#tech', Icon: Layers3 },
+  { label: 'journey', href: '#career', Icon: Flag },
+  { label: 'contact', href: '#contact', Icon: Mail },
 ];
 
 export default function Navbar() {
+  const { locale, setLocale, t } = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
   const [scrolled, setScrolled] = useState(false);
@@ -107,7 +110,7 @@ export default function Navbar() {
             href="/"
             onClick={(event) => {
               event.preventDefault();
-              window.location.reload();
+              navigateTo("#hero");
             }}
             className="group flex min-h-11 items-center gap-3 rounded-lg"
           >
@@ -137,7 +140,7 @@ export default function Navbar() {
                   }`}
                 >
                   <item.Icon size={15} className={isActive ? 'text-primary' : 'text-text-secondary'} />
-                  <span>{item.label}</span>
+                  <span>{t(item.label as Parameters<typeof t>[0])}</span>
                   {isActive && (
                     <motion.span
                       initial={{ opacity: 0 }}
@@ -183,10 +186,17 @@ export default function Navbar() {
               </a>
             </div>
 
+            <label className="relative flex min-h-11 items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-2 text-text-secondary focus-within:ring-2 focus-within:ring-primary">
+              <Languages size={16} aria-hidden="true" />
+              <span className="sr-only">{t('language')}</span>
+              <select aria-label={t('language')} value={locale} onChange={(event) => setLocale(event.target.value as Locale)} className="max-w-[74px] cursor-pointer bg-[#090a0f] text-xs font-semibold text-text outline-none">
+                <option value="en">EN</option><option value="vi">VI</option><option value="zh">中文</option>
+              </select>
+            </label>
             <button
               type="button"
               onClick={() => setMobileOpen((open) => !open)}
-              aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-label={mobileOpen ? t('close') : t('menu')}
               aria-expanded={mobileOpen}
               className="grid h-11 w-11 place-items-center rounded-lg text-text-secondary transition-colors hover:bg-card hover:text-text lg:hidden"
             >
@@ -225,7 +235,7 @@ export default function Navbar() {
                     }`}
                   >
                     <item.Icon size={16} />
-                    <span>{item.label}</span>
+                    <span>{t(item.label as Parameters<typeof t>[0])}</span>
                   </button>
                 );
               })}
