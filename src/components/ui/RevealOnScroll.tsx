@@ -1,7 +1,9 @@
 'use client';
 
+import { useReducedMotion } from '@/lib/useReducedMotion';
+
 import { useRef, type ReactNode } from 'react';
-import { motion, useInView, useReducedMotion } from 'motion/react';
+import { motion, useInView } from 'motion/react';
 
 interface RevealOnScrollProps {
   children: ReactNode;

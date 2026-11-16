@@ -1,9 +1,11 @@
 'use client';
 
+import { useReducedMotion } from '@/lib/useReducedMotion';
+
 import { useLocale } from '@/components/i18n/LocaleProvider';
 import { useState } from 'react';
 import { Download, Gamepad2, Mail, MapPin, Send } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import { FacebookIcon, GithubIcon } from '@/components/ui/BrandIcons';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import SectionHeader from '@/components/ui/SectionHeader';

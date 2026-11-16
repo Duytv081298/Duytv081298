@@ -100,9 +100,9 @@ export default function CVModal({ isOpen, onClose }: CVModalProps) {
             className="relative z-10 flex max-h-[90dvh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-violet-500/40 bg-[#090b14] text-text shadow-[0_0_80px_rgba(139,92,246,0.35)]"
           >
             {/* Header */}
-            <div className="relative flex shrink-0 items-center justify-between border-b border-border/60 bg-bg-primary/90 px-6 py-5">
-              <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-xl border border-primary/30 bg-primary/10 text-primary">
+            <div className="relative flex shrink-0 items-center justify-between border-b border-border/60 bg-bg-primary/90 px-4 py-4 sm:px-6 sm:py-5">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="hidden sm:grid shrink-0 h-10 w-10 place-items-center rounded-xl border border-primary/30 bg-primary/10 text-primary">
                   <FileText size={20} />
                 </div>
                 <div>
@@ -126,7 +126,7 @@ export default function CVModal({ isOpen, onClose }: CVModalProps) {
             </div>
 
             {/* Scrollable Body */}
-            <div className="custom-scrollbar overflow-y-auto p-6 md:p-8 space-y-8">
+            <div className="custom-scrollbar overflow-y-auto p-4 sm:p-6 md:p-8 space-y-8">
               {/* Profile Brief */}
               <div className="grid gap-6 rounded-xl border border-primary/20 bg-gradient-to-r from-violet-950/20 via-primary/5 to-transparent p-6 md:grid-cols-12">
                 <div className="md:col-span-7 space-y-3">

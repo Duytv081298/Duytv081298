@@ -14,7 +14,8 @@ import {
 } from 'lucide-react';
 import { useLocale } from '@/components/i18n/LocaleProvider';
 import Modal from '@/components/ui/Modal';
-import Image from 'next/image';
+import GameArtwork from '@/components/game/GameArtwork';
+import { useReducedMotion } from '@/lib/useReducedMotion';
 import SectionHeader from '@/components/ui/SectionHeader';
 import PlayableFrame from '@/components/game/PlayableFrame';
 import StoreLink from '@/components/game/StoreLink';
@@ -80,6 +81,7 @@ const INITIAL_VISIBLE_ADS = 10;
 
 export default function PlayableAdsSection() {
   const { t } = useLocale();
+  const reduceMotion = useReducedMotion();
   const [activeFilter, setActiveFilter] = useState('all');
   const [showAllAds, setShowAllAds] = useState(false);
   const [activeAd, setActiveAd] = useState<PlayableAd | null>(null);
@@ -124,11 +126,11 @@ export default function PlayableAdsSection() {
         pendingPlayTimers.current.push(setTimeout(() => {
           const cardElement = document.getElementById(`playable-ad-${ad.slug}`);
           if (cardElement) {
-            cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            cardElement.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' });
           } else {
             const section = document.getElementById('playable');
             if (section) {
-              section.scrollIntoView({ behavior: 'smooth' });
+              section.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
             }
           }
         }, 100));
@@ -241,7 +243,7 @@ export default function PlayableAdsSection() {
             id="playable-ads-grid"
             key={activeFilter}
             className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 lg:gap-[18px]"
-            initial={{ opacity: 0, y: 20 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
@@ -254,7 +256,7 @@ export default function PlayableAdsSection() {
                   key={ad.id}
                   id={`playable-ad-${ad.slug}`}
                   className="group relative block w-full appearance-none rounded-xl bg-transparent p-0 text-inherit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary"
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={reduceMotion ? false : { opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.03 }}
@@ -277,14 +279,6 @@ export default function PlayableAdsSection() {
                       <div className="pointer-events-none absolute inset-0 z-20 animate-pulse rounded-xl border-2 border-primary" />
                     )}
                     {/* Blurred icon and color wash keep each card tied to its game art. */}
-                    {ad.icon ? (
-                      <Image unoptimized
-                        src={ad.icon}
-                        fill sizes="240px" loading="lazy"
-                        alt=""
-                        className="pointer-events-none absolute inset-0 h-full w-full scale-125 object-cover opacity-[0.14] blur-2xl transition-transform duration-500 group-hover:scale-[1.35]"
-                      />
-                    ) : null}
                     <div
                       className="pointer-events-none absolute inset-0 opacity-[0.16] transition-opacity duration-300 group-hover:opacity-[0.22]"
                       style={{
@@ -296,12 +290,8 @@ export default function PlayableAdsSection() {
                     <div className="relative z-10 flex w-full flex-col items-center justify-center">
                       <div className="relative h-14 w-14 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-105 sm:h-16 sm:w-16 lg:h-[68px] lg:w-[68px]">
                         {ad.icon ? (
-                          <Image unoptimized
-                            src={ad.icon}
-                            width={68} height={68} loading="lazy"
-                            alt=""
-                            className="h-full w-full rounded-[22%] border border-white/15 object-cover shadow-[0_8px_18px_rgba(0,0,0,0.4)]"
-                          />
+                          <GameArtwork src={ad.icon} title={ad.title} color={ad.coverColor} secondary={ad.coverColorSecondary}
+                            className="rounded-[22%] border border-white/15 shadow-[0_8px_18px_rgba(0,0,0,0.4)]" />
                         ) : (
                           <div
                             className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-[22%] border border-white/15 p-2 shadow-[0_8px_18px_rgba(0,0,0,0.4)]"
@@ -366,7 +356,7 @@ export default function PlayableAdsSection() {
                     ? 'w-full max-w-[1160px] h-[90dvh] md:h-[min(720px,90dvh)] rounded-2xl'
                     : 'w-full max-w-[940px] h-[90dvh] md:h-[min(720px,90dvh)] rounded-2xl'
               } transition-all duration-300`}
-              initial={{ scale: 0.95, opacity: 0 }}
+              initial={reduceMotion ? false : { scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 350, damping: 28 }}
@@ -509,12 +499,7 @@ export default function PlayableAdsSection() {
                       {/* Preview Image / Fallback */}
                       <div className="w-36 h-36 md:w-40 md:h-40 rounded-xl overflow-hidden bg-black flex items-center justify-center border border-violet-500/70 shadow-[0_0_25px_rgba(168,85,247,0.45)] mb-6">
                         {activeAd.icon ? (
-                          <Image unoptimized
-                            src={activeAd.icon}
-                            width={160} height={160}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
+                          <GameArtwork src={activeAd.icon} title={activeAd.title} color={activeAd.coverColor} secondary={activeAd.coverColorSecondary} sizes="160px" />
                         ) : (
                           <div
                             className="w-full h-full flex flex-col items-center justify-center p-4 relative overflow-hidden"

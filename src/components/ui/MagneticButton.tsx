@@ -1,7 +1,9 @@
 'use client';
 
+import { useReducedMotion } from '@/lib/useReducedMotion';
+
 import { useRef, useState, type ReactNode, type MouseEvent } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 
 interface MagneticButtonProps {
   children: ReactNode;

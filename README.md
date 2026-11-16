@@ -171,7 +171,7 @@ required to access the portfolio.
 
 ### Checks
 
-Use Node.js 22 or later:
+Use Node.js 22.12 or later:
 
 ```sh
 npm ci

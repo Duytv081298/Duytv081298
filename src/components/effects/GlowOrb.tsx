@@ -1,6 +1,8 @@
 'use client';
 
-import { motion, useReducedMotion } from 'motion/react';
+import { useReducedMotion } from '@/lib/useReducedMotion';
+
+import { motion } from 'motion/react';
 
 interface GlowOrbProps {
   color?: string;

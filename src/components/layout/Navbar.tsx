@@ -1,8 +1,9 @@
 'use client';
 
+import { useReducedMotion } from '@/lib/useReducedMotion';
+
 import { useEffect, useState } from 'react';
 import { Languages, Gamepad2, Menu, X } from 'lucide-react';
-import { useReducedMotion } from 'motion/react';
 import { useLocale, type Locale } from '@/components/i18n/LocaleProvider';
 import Modal from '@/components/ui/Modal';
 

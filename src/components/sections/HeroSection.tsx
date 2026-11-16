@@ -1,9 +1,11 @@
 'use client';
 
-import Image from 'next/image';
+import { useReducedMotion } from '@/lib/useReducedMotion';
+
+import GameArtwork from '@/components/game/GameArtwork';
 import { useState } from 'react';
 import { useLocale } from '@/components/i18n/LocaleProvider';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import { BriefcaseBusiness, Download, Gamepad2, Layers3, Play, Zap } from 'lucide-react';
 import { GithubIcon, FacebookIcon } from '@/components/ui/BrandIcons';
 import MagneticButton from '@/components/ui/MagneticButton';
@@ -190,13 +192,8 @@ export default function HeroSection() {
                   }}
                   whileHover={reduceMotion ? undefined : { scale: 1.08, y: -4 }}
                 >
-                  <Image unoptimized
-                    src={game.icon!}
-                    alt=""
-                    width={position.size}
-                    height={position.size}
-                    className="h-full w-full rounded-[18px] border border-white/20 object-cover shadow-[0_12px_28px_rgba(0,0,0,0.6),0_0_20px_rgba(62,166,255,0.12)] transition-shadow group-hover:shadow-[0_14px_32px_rgba(0,0,0,0.7),0_0_24px_rgba(62,166,255,0.3)]"
-                  />
+                  <GameArtwork src={game.icon} title={game.title} color={game.coverColor} secondary={game.coverColorSecondary}
+                    className="rounded-[18px] border border-white/20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]" />
                 </motion.button>
               );
             })}
