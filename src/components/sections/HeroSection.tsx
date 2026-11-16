@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { useLocale } from '@/components/i18n/LocaleProvider';
 import { motion, useReducedMotion } from 'motion/react';
@@ -84,7 +85,7 @@ export default function HeroSection() {
                 </span>
               </h1>
               <p className="mt-4 font-display text-lg font-semibold text-[#A8B6CB] lg:text-xl">
-                Cocos Developer
+                {t('role')}
               </p>
               <p className="mt-4 max-w-[570px] text-sm leading-7 text-text-secondary">
                 {t('intro')}
@@ -115,7 +116,7 @@ export default function HeroSection() {
               initial={reduceMotion ? false : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.24 }}
-              className="mt-7 flex flex-col gap-3 sm:flex-row"
+              className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
             >
               <MagneticButton variant="primary" size="md" onClick={() => openGame('arrow')} className="min-h-12 min-w-[245px] text-sm font-semibold">
                 <Play size={15} fill="currentColor" aria-hidden="true" />
@@ -155,7 +156,7 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          <div className="relative hidden h-[510px] lg:col-span-6 lg:block" aria-label="Featured game icons">
+          <div className="relative hidden h-[510px] lg:col-span-6 lg:block" role="group" aria-label={t('Featured game icons')}>
             <svg className="absolute inset-0 h-full w-full opacity-60" viewBox="0 0 620 510" fill="none" aria-hidden="true">
               <ellipse cx="330" cy="255" rx="282" ry="188" stroke="url(#hero-orbit)" strokeOpacity="0.28" />
               <ellipse cx="330" cy="255" rx="222" ry="142" stroke="url(#hero-orbit)" strokeOpacity="0.22" />
@@ -177,7 +178,7 @@ export default function HeroSection() {
                   key={game.slug}
                   type="button"
                   onClick={() => openGame(game.slug)}
-                  aria-label={`Play ${game.title}`}
+                  aria-label={t('Play {title}', { title: game.title })}
                   className="group absolute cursor-pointer rounded-[18px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   style={{ left: `${position.left}%`, top: `${position.top}%`, width: position.size, height: position.size }}
                   initial={reduceMotion ? false : { opacity: 0, scale: 0.75 }}
@@ -189,8 +190,8 @@ export default function HeroSection() {
                   }}
                   whileHover={reduceMotion ? undefined : { scale: 1.08, y: -4 }}
                 >
-                  <img
-                    src={game.icon}
+                  <Image unoptimized
+                    src={game.icon!}
                     alt=""
                     width={position.size}
                     height={position.size}

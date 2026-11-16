@@ -28,8 +28,8 @@
 
   /* ── Text ── */
   --color-text:           #EEF2F8;
-  --color-text-secondary: #7A8BA0;
-  --color-text-muted:     #4A5568;
+  --color-text-secondary: #A8B6C9;
+  --color-text-muted:     #94A3B8;
 
   /* ── Fonts ── */
   --font-display: var(--font-heading), 'Space Grotesk', system-ui, sans-serif;
@@ -106,7 +106,7 @@ select:focus-visible {
 }
 
 section[id] {
-  scroll-margin-top: 5rem;
+  scroll-margin-top: 6rem;
 }
 
 /* ─── Scrollbar ─── */
@@ -322,7 +322,6 @@ code, pre {
   position: relative;
   overflow: hidden;
   border: none;
-  outline: none;
   letter-spacing: -0.01em;
 }
 
@@ -472,3 +471,19 @@ code, pre {
 .scrollbar-none::-webkit-scrollbar {
   display: none;             /* Chrome, Safari, Opera */
 }
+
+/* Shared interaction and accessibility foundations. */
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 4px; }
+button:not(:disabled), select, a { cursor: pointer; }
+button, select { touch-action: manipulation; }
+main:focus, section:focus { outline: none; }
+.skip-link { position: fixed; top: 1rem; left: 1rem; z-index: 10000; transform: translateY(-200%); padding: .75rem 1rem; border-radius: .5rem; background: var(--color-text); color: var(--color-bg-primary); font-weight: 600; }
+.skip-link:focus { transform: translateY(0); }
+.portfolio-modal { position: fixed; inset: 0; width: 100%; max-width: none; height: 100%; height: 100dvh; max-height: none; margin: 0; padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); border: 0; background: transparent; color: var(--color-text); overflow-y: auto; }
+.portfolio-modal[open] { display: flex; align-items: center; justify-content: center; }
+.portfolio-modal::backdrop { background: rgba(3, 5, 12, .92); backdrop-filter: blur(8px); }
+.portfolio-modal button, .portfolio-modal select, #playable button, #career button { min-height: 44px; }
+.portfolio-modal button:has(> svg:only-child) { min-width: 44px; flex-shrink: 0; }
+:lang(zh-CN) { line-break: strict; }
+@media (hover: none), (prefers-reduced-motion: reduce) { .mouse-spotlight { display: none; } }
+@media (prefers-reduced-motion: reduce) { .animate-ping, .animate-pulse, .animate-float { animation: none !important; } }

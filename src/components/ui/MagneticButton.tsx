@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, type ReactNode, type MouseEvent } from 'react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 
 interface MagneticButtonProps {
   children: ReactNode;
@@ -22,12 +22,13 @@ export default function MagneticButton({
   size = 'md',
   magnetic = true,
 }: MagneticButtonProps) {
+  const reduceMotion = useReducedMotion();
   const buttonRef = useRef<HTMLElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [ripples, setRipples] = useState<{ x: number; y: number; id: number }[]>([]);
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!magnetic || !buttonRef.current) return;
+    if (reduceMotion || !magnetic || !buttonRef.current) return;
     const rect = buttonRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -42,6 +43,7 @@ export default function MagneticButton({
 
   const handleClick = (e: MouseEvent) => {
     if (!buttonRef.current) return;
+    if (reduceMotion) { onClick?.(); return; }
     const rect = buttonRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -114,7 +116,7 @@ export default function MagneticButton({
     onMouseMove: handleMouseMove,
     onMouseLeave: handleMouseLeave,
     onClick: handleClick,
-    whileTap: { scale: 0.97 },
+    whileTap: reduceMotion ? undefined : { scale: 0.97 },
   };
 
   if (href) {
@@ -132,7 +134,7 @@ export default function MagneticButton({
   }
 
   return (
-    <motion.button
+    <motion.button type="button"
       {...motionProps}
       ref={buttonRef as React.Ref<HTMLButtonElement>}
     >

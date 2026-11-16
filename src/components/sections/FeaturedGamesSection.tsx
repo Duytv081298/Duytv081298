@@ -1,3 +1,8 @@
+'use client';
+
+import { useLocale } from '@/components/i18n/LocaleProvider';
+import Link from 'next/link';
+import { games } from '@/data/games';
 import { ArrowRight, Code2, Gamepad2, Globe2, MonitorSmartphone, Smartphone, Zap } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 
@@ -29,6 +34,7 @@ const gameCategories = [
 ] as const;
 
 export default function FeaturedGamesSection() {
+  const { t } = useLocale();
   return (
     <section
       id="games"
@@ -37,9 +43,9 @@ export default function FeaturedGamesSection() {
       <div className="section-container">
         <SectionHeader
           id="games"
-          title="Games Portfolio"
+          title={t('Games Portfolio')}
           index="02"
-          subtitle="Core game development across Mobile, Instant Platforms and Web."
+          subtitle={t('Core game development across Mobile, Instant Platforms and Web.')}
           className="mb-6"
         />
 
@@ -65,24 +71,22 @@ export default function FeaturedGamesSection() {
                     style={{ color: category.color }}
                     aria-hidden="true"
                   />
-                  <h3 className="font-display text-lg font-semibold text-text">{category.label}</h3>
+                  <h3 className="font-display text-lg font-semibold text-text">{t(category.label)}</h3>
                 </div>
 
                 <p className="relative z-10 mt-3 max-w-[19rem] text-[13px] leading-5 text-text-secondary">
-                  {category.description}
+                  {t(category.description)}
                 </p>
 
-                <div className="relative z-10 mt-auto pt-4">
-                  <a
-                    href="#playable"
-                    className="inline-flex min-h-9 items-center gap-2 rounded-md border px-3 py-1.5 font-code text-[11px] font-semibold transition-colors duration-200 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary motion-reduce:transition-none"
-                    style={{ color: category.color, borderColor: `${category.color}85` }}
-                    aria-label={`View ${category.label} projects`}
-                  >
-                    View Projects
-                    <ArrowRight className="size-3.5" strokeWidth={1.8} aria-hidden="true" />
-                  </a>
-                </div>
+                <ul className="relative z-10 mt-auto space-y-1 pt-4">
+                  {games.filter((game) => category.value === 'web' ? game.platforms.includes('Web') : game.category === category.value).map((game) => (
+                    <li key={game.slug}>
+                      <Link href={`/games/${game.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-md py-2 text-sm font-medium text-primary hover:underline" aria-label={`${t('View case study')}: ${game.title}`}>
+                        {game.title}<ArrowRight size={15} aria-hidden="true" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
 
                 <Decoration
                   className="pointer-events-none absolute -bottom-2 right-3 size-20 opacity-35 transition-opacity duration-200 group-hover:opacity-55 motion-reduce:transition-none sm:size-24"

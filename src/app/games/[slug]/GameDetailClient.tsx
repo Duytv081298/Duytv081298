@@ -2,6 +2,9 @@
 
 import { motion } from 'motion/react';
 import Link from 'next/link';
+import { useLocale } from '@/components/i18n/LocaleProvider';
+import { localizeGame } from '@/components/i18n/game-copy';
+import { LanguageSelect } from '@/components/layout/Navbar';
 import { ArrowLeft, Cpu, Zap, TrendingDown, ArrowRight, Target, Lightbulb, Wrench } from 'lucide-react';
 import { type Game } from '@/data/games';
 import { PlatformBadge } from '@/components/ui/Badge';
@@ -24,18 +27,19 @@ function OptimizationCard({
   after: string;
   index: number;
 }) {
+  const { t } = useLocale();
   return (
     <RevealOnScroll delay={index * 0.1}>
-      <div className="bg-card border border-border rounded-xl p-6 hover:border-primary/30 transition-all duration-300 group">
+      <div className="relative bg-card border border-border rounded-xl p-6 hover:border-primary/30 transition-all duration-300 group">
         <p className="text-text-muted text-xs font-code uppercase tracking-wider mb-4">
-          {metric}
+          {t(metric)}
         </p>
 
         <div className="flex items-center gap-3">
           {/* Before */}
           <div className="flex-1 text-center">
             <p className="text-danger font-code text-2xl font-bold">{before}</p>
-            <p className="text-text-muted text-[10px] mt-1 uppercase">Before</p>
+            <p className="text-text-muted text-[10px] mt-1 uppercase">{t('Before')}</p>
           </div>
 
           {/* Arrow */}
@@ -47,7 +51,7 @@ function OptimizationCard({
           {/* After */}
           <div className="flex-1 text-center">
             <p className="text-accent font-code text-2xl font-bold">{after}</p>
-            <p className="text-text-muted text-[10px] mt-1 uppercase">After</p>
+            <p className="text-text-muted text-[10px] mt-1 uppercase">{t('After')}</p>
           </div>
         </div>
 
@@ -58,9 +62,11 @@ function OptimizationCard({
   );
 }
 
-export default function GameDetailClient({ game }: GameDetailClientProps) {
+export default function GameDetailClient({ game: source }: GameDetailClientProps) {
+  const { locale, t } = useLocale();
+  const game = localizeGame(source, locale);
   return (
-    <div className="min-h-screen bg-bg-primary text-text">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-bg-primary text-text">
       <GridBackground />
       <MouseSpotlight />
 
@@ -75,6 +81,7 @@ export default function GameDetailClient({ game }: GameDetailClientProps) {
         />
 
         <div className="section-container relative z-10 pt-8 pb-16">
+          <div className="mb-6 flex justify-end"><LanguageSelect /></div>
           {/* Back Button */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -86,7 +93,7 @@ export default function GameDetailClient({ game }: GameDetailClientProps) {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-text-secondary hover:text-text hover:bg-card border border-border/50 hover:border-border transition-all duration-200 text-sm mb-8"
             >
               <ArrowLeft size={16} />
-              Back to Portfolio
+              {t('Back to Portfolio')}
             </Link>
           </motion.div>
 
@@ -118,9 +125,9 @@ export default function GameDetailClient({ game }: GameDetailClientProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex flex-wrap items-center gap-3 mb-2">
                 <span className="px-2.5 py-1 rounded-md bg-primary/10 text-primary text-xs font-code border border-primary/20">
-                  {game.genre}
+                  {t(game.genre)}
                 </span>
                 <span className="px-2.5 py-1 rounded-md bg-card text-text-secondary text-xs font-code border border-border">
                   {game.engine}
@@ -134,7 +141,7 @@ export default function GameDetailClient({ game }: GameDetailClientProps) {
 
               {/* Platforms */}
               <div className="flex flex-wrap gap-2 mb-6">
-                {game.platforms.map((platform) => (
+                {[...new Set(game.platforms)].map((platform) => (
                   <PlatformBadge key={platform} platform={platform} />
                 ))}
               </div>
@@ -159,7 +166,7 @@ export default function GameDetailClient({ game }: GameDetailClientProps) {
                 <Cpu size={20} className="text-primary" />
               </div>
               <div>
-                <h2 className="text-2xl font-display font-bold text-text">Architecture</h2>
+                <h2 className="text-2xl font-display font-bold text-text">{t('Architecture')}</h2>
                 <p className="text-text-muted text-xs font-code">{"// system_design"}</p>
               </div>
             </div>
@@ -178,7 +185,7 @@ export default function GameDetailClient({ game }: GameDetailClientProps) {
                   <Target size={20} className="text-danger" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-display font-bold text-text">Challenges</h2>
+                  <h2 className="text-2xl font-display font-bold text-text">{t('Challenges')}</h2>
                   <p className="text-text-muted text-xs font-code">{"// problems_faced"}</p>
                 </div>
               </div>
@@ -205,7 +212,7 @@ export default function GameDetailClient({ game }: GameDetailClientProps) {
                   <Lightbulb size={20} className="text-accent" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-display font-bold text-text">Solutions</h2>
+                  <h2 className="text-2xl font-display font-bold text-text">{t('Solutions')}</h2>
                   <p className="text-text-muted text-xs font-code">{"// implementation"}</p>
                 </div>
               </div>
@@ -235,14 +242,14 @@ export default function GameDetailClient({ game }: GameDetailClientProps) {
               </div>
               <div>
                 <h2 className="text-2xl font-display font-bold text-text">
-                  Performance Optimization
+                  {t('Performance Optimization')}
                 </h2>
                 <p className="text-text-muted text-xs font-code">{"// before_vs_after"}</p>
               </div>
             </div>
           </RevealOnScroll>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {game.optimizations.map((opt, i) => (
               <OptimizationCard
                 key={opt.metric}
@@ -260,16 +267,16 @@ export default function GameDetailClient({ game }: GameDetailClientProps) {
           <div className="flex items-center gap-3 mb-4">
             <Wrench size={16} className="text-text-muted" />
             <span className="text-text-muted text-xs font-code uppercase tracking-wider">
-              Technologies
+              {t('Technologies')}
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
             {game.tags.map((tag) => (
               <span
-                key={tag}
+                key={t(tag)}
                 className="px-3 py-1.5 rounded-lg bg-card border border-border text-text-secondary text-sm font-code hover:border-primary/30 hover:text-text transition-all duration-200"
               >
-                {tag}
+                {t(tag)}
               </span>
             ))}
           </div>
@@ -282,10 +289,10 @@ export default function GameDetailClient({ game }: GameDetailClientProps) {
             className="inline-flex items-center gap-2 text-text-secondary hover:text-primary transition-colors duration-200 font-display text-sm"
           >
             <ArrowLeft size={16} />
-            Back to Portfolio
+            {t('Back to Portfolio')}
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

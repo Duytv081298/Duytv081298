@@ -1,3 +1,6 @@
+'use client';
+
+import { useLocale } from '@/components/i18n/LocaleProvider';
 import { Flame, GitBranch, Hexagon, Orbit, PackageOpen, PanelsTopLeft } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
 
@@ -113,14 +116,15 @@ const workflowTools = [
 ] as const;
 
 export default function TechStackSection() {
+  const { t } = useLocale();
   return (
     <section id="tech" className="relative border-b border-border/50 bg-bg-secondary/35 py-12 md:py-14">
       <div className="section-container">
         <SectionHeader
           id="tech"
           index="03"
-          title="Tech Stack"
-          subtitle="Tools and engines I use to build high-quality games."
+          title={t('Tech Stack')}
+          subtitle={t('Tools and engines I use to build high-quality games.')}
         />
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -143,7 +147,7 @@ export default function TechStackSection() {
                   <h3 className="font-display text-lg font-semibold text-text">{tech.name}</h3>
                 </div>
                 <p className="mt-auto max-w-[17rem] pt-5 text-[13px] leading-5 text-text-secondary">
-                  {tech.description}
+                  {t(tech.description)}
                 </p>
               </article>
             );
@@ -152,9 +156,9 @@ export default function TechStackSection() {
 
         <div className="mt-7">
           <p className="mb-2.5 font-code text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
-            Tools &amp; Workflow
+            {t('Tools & Workflow')}
           </p>
-          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-8" aria-label="Tools and workflow">
+          <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:grid-cols-8" aria-label={t('Tools & Workflow')}>
             {workflowTools.map((tool) => (
               <li
                 key={tool.name}

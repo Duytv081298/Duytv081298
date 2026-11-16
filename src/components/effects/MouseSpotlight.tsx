@@ -6,6 +6,7 @@ export default function MouseSpotlight() {
   const spotlightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!window.matchMedia('(hover: hover) and (prefers-reduced-motion: no-preference)').matches) return;
     const handleMouseMove = (e: MouseEvent) => {
       if (spotlightRef.current) {
         spotlightRef.current.style.setProperty('--mx', `${e.clientX}px`);
@@ -20,7 +21,8 @@ export default function MouseSpotlight() {
   return (
     <div
       ref={spotlightRef}
-      className="fixed inset-0 pointer-events-none transition-opacity duration-300"
+      aria-hidden="true"
+      className="mouse-spotlight fixed inset-0 pointer-events-none transition-opacity duration-300"
       style={{
         zIndex: 2,
         background: `radial-gradient(

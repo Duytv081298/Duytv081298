@@ -6,28 +6,12 @@ import { ArrowUp, Gamepad2 } from 'lucide-react';
 
 export default function Footer() {
   const { t } = useLocale();
-  const scrollToTop = (e: MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // 1. Scroll window smooth
-    try {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    } catch {
-      window.scrollTo(0, 0);
-    }
-
-    // 2. Direct DOM scrollIntoView fallback
-    const heroEl = document.getElementById('hero');
-    if (heroEl) {
-      heroEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    // 3. Document scrollTop fallbacks
-    if (typeof document !== 'undefined') {
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }
+  const scrollToTop = (event: MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    const hero = document.getElementById('hero');
+    hero?.setAttribute('tabindex', '-1');
+    hero?.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   };
 
   return (
@@ -45,7 +29,7 @@ export default function Footer() {
 
         {/* Copyright & Info */}
         <p className="font-code text-xs text-text-secondary text-center sm:text-left">
-          © {new Date().getFullYear()} Trịnh Văn Duy. Built with <span className="text-[#E15B64] font-bold">♥</span> and lots of ☕
+          © {new Date().getFullYear()} Trịnh Văn Duy. {t('All rights reserved.')}
         </p>
 
         {/* Back to top Button */}

@@ -1,3 +1,6 @@
+'use client';
+
+import { useLocale } from '@/components/i18n/LocaleProvider';
 import SectionHeader from '@/components/ui/SectionHeader';
 
 interface MetricData {
@@ -101,20 +104,21 @@ function Sparkline({ data, color, index }: { data: readonly number[]; color: str
 }
 
 export default function PerformanceSection() {
+  const { t } = useLocale();
   return (
     <section id="performance" className="relative border-b border-border/50 py-8">
       <div className="section-container">
         <SectionHeader
           id="performance"
-          title="Performance"
-          subtitle="Built with optimization in mind for the best player experience."
+          title={t('Performance')}
+          subtitle={t('Built with optimization in mind for the best player experience.')}
           className="mb-5"
         />
 
         <dl className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {metrics.map((metric, index) => (
             <div
-              key={metric.label}
+              key={t(metric.label)}
               className="min-h-[154px] overflow-hidden rounded-xl border bg-card/65 p-4 sm:p-5"
               style={{
                 borderColor: `${metric.color}35`,
@@ -125,7 +129,7 @@ export default function PerformanceSection() {
                 className="font-code text-[10px] font-bold uppercase tracking-[0.12em]"
                 style={{ color: metric.color }}
               >
-                {metric.label}
+                {t(metric.label)}
               </dt>
               <dd className="mt-1 font-code text-[1.7rem] font-bold leading-none" style={{ color: metric.color }}>
                 {metric.prefix && <span className="mr-1">{metric.prefix}</span>}

@@ -43,7 +43,7 @@ const rawPlayableAds: PlayableAd[] = [
     platform: 'Mobile',
     coverColor: '#FF6B6B',
     coverColorSecondary: '#C44569',
-    description: 'Một tựa game hyper-casual bắn cung nhịp độ nhanh. Người chơi chạm để bắn tên tiêu diệt mục tiêu và né tránh các chướng ngại vật chuyển động.',
+    description: 'A fast-paced archery game. Tap to shoot targets and avoid moving obstacles.',
     contributions: ['Playable Ads Development', 'Gameplay Mechanics', 'UI/UX Programming', 'Performance Optimization'],
     googlePlay: 'https://play.google.com/store/apps/details?id=com.arrow.puzzle',
     appStore: 'https://apps.apple.com/us/app/arrow'
@@ -65,7 +65,7 @@ const rawPlayableAds: PlayableAd[] = [
     platform: 'Mobile',
     coverColor: '#FF6B9D',
     coverColorSecondary: '#C44569',
-    description: 'Trò chơi giải đố sắp xếp hoa rực rỡ sắc màu. Người chơi cần di chuyển và nhóm các chồi hoa cùng màu để chúng nở rộ và hoàn thành màn chơi.',
+    description: 'A colorful flower sorting puzzle. Group blooms of the same color to help them blossom and complete each level.',
     contributions: ['Playable Ads Development', 'Sorting Algorithm Implementation', 'Satisfying Blossom Particle Effects', 'Memory Management'],
     googlePlay: 'https://play.google.com/store/apps/details?id=com.bloom.sort.puzzle',
     appStore: 'https://apps.apple.com/us/app/bloom-sort'
@@ -88,7 +88,7 @@ const rawPlayableAds: PlayableAd[] = [
     platform: 'Mobile',
     coverColor: '#8B6914',
     coverColorSecondary: '#6F4E37',
-    description: 'Một game mô phỏng quản lý quán cà phê thư giãn. Người chơi điều hành quầy bar, phục vụ khách hàng các loại đồ uống thơm ngon và nâng cấp trang thiết bị.',
+    description: 'A relaxing coffee shop simulation. Manage the counter, serve drinks and upgrade your equipment.',
     contributions: ['Playable Ads Development', 'Resource & State Management', 'Fluid Character Movement', 'UI/UX Animations'],
     googlePlay: 'https://play.google.com/store/apps/details?id=com.coffee.please.sim',
     appStore: 'https://apps.apple.com/us/app/coffee-please'
@@ -110,7 +110,7 @@ const rawPlayableAds: PlayableAd[] = [
     platform: 'Mobile',
     coverColor: '#00F5A0',
     coverColorSecondary: '#00C97B',
-    description: 'Một trò chơi hành động chướng ngại vật vui nhộn lấy cảm hứng từ Fall Guys. Người chơi điều khiển nhân vật chạy đua, vượt qua các thử thách vật lý để giành chiến thắng.',
+    description: 'A playful obstacle course inspired by Fall Guys. Race through physics challenges to reach the finish line.',
     contributions: ['Playable Ads Development', 'Ragdoll Physics & Movement', 'Dynamic Obstacle Scripting', 'Multi-variant Testing configurations'],
     googlePlay: 'https://play.google.com/store/apps/details?id=com.fallguy.legend',
     appStore: 'https://apps.apple.com/us/app/fall-guy-legend'
@@ -137,7 +137,7 @@ const rawPlayableAds: PlayableAd[] = [
     platform: 'Mobile',
     coverColor: '#4DA3FF',
     coverColorSecondary: '#2E86DE',
-    description: 'Một trò chơi giải đố cơ học đầy thử thách với ốc vít và thanh gỗ. Người chơi cần tháo rời các thanh gỗ bằng cách tháo và đặt ốc vít vào các lỗ trống hợp lý.',
+    description: 'A mechanical puzzle with screws and wooden boards. Remove the boards by placing screws into the right empty holes.',
     contributions: ['Playable Ads Development', 'Nuts and Bolts physics simulation', 'Satisfying metal clinking audio', 'Overdraw GPU Optimization'],
     googlePlay: 'https://play.google.com/store/apps/details?id=com.nuts.bolts.srcew.puzzle',
     appStore: 'https://apps.apple.com/us/app/screw-puzzle'
@@ -156,7 +156,7 @@ const rawPlayableAds: PlayableAd[] = [
     platform: 'Mobile',
     coverColor: '#26DE81',
     coverColorSecondary: '#0FB9B1',
-    description: 'Một trò chơi dọn dẹp và sắp xếp phòng ASMR cực kỳ thư giãn. Người chơi mở hộp, phân loại đồ đạc và sắp xếp các căn phòng ngăn nắp, đẹp mắt.',
+    description: 'A relaxing ASMR room organization game. Unbox items, sort belongings and arrange tidy, beautiful rooms.',
     contributions: ['Playable Ads Development', 'Satisfying ASMR triggers & haptics', 'Modular inventory system', 'Interactive drag-and-drop programming'],
     googlePlay: 'https://play.google.com/store/apps/details?id=com.diy.perfect.asmr',
     appStore: 'https://apps.apple.com/us/app/tidy-master-satisfeel-asmr'
