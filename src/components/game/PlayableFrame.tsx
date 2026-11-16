@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type SyntheticEvent } from 'react';
 import { CheckCircle2, LoaderCircle, RotateCw } from 'lucide-react';
+import { useLocale } from '@/components/i18n/LocaleProvider';
 import StoreLink from './StoreLink';
 
 type PlayableWindow = Window & {
@@ -21,6 +22,7 @@ interface PlayableFrameProps {
 }
 
 export default function PlayableFrame({ src, title, googlePlay, appStore }: PlayableFrameProps) {
+  const { t } = useLocale();
   const [demoEnded, setDemoEnded] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [loadState, setLoadState] = useState<'loading' | 'slow' | 'loaded' | 'error'>('loading');
@@ -39,7 +41,8 @@ export default function PlayableFrame({ src, title, googlePlay, appStore }: Play
 
   const connectStoreNotice = (event: SyntheticEvent<HTMLIFrameElement>) => {
     // iframe load only confirms the document loaded, not engine readiness.
-    const gameDocument = event.currentTarget.contentDocument;
+    let gameDocument: Document | null;
+    try { gameDocument = event.currentTarget.contentDocument; } catch { setLoadState('error'); return; }
     if (!gameDocument || !gameDocument.querySelector('canvas')) {
       setLoadState('error');
       return;
@@ -73,7 +76,7 @@ export default function PlayableFrame({ src, title, googlePlay, appStore }: Play
         className="block h-full w-full border-0"
         scrolling="no"
         sandbox="allow-scripts allow-same-origin"
-        title={`Play ${title}`}
+        title={t('Play {title}', { title })}
         allow="autoplay"
         inert={demoEnded}
       />
@@ -81,14 +84,14 @@ export default function PlayableFrame({ src, title, googlePlay, appStore }: Play
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[#07090e]/95 p-5 text-center" role="status" aria-live="polite">
           {loadState === 'loading' && <LoaderCircle className="animate-spin text-violet-300" size={28} aria-hidden="true" />}
           <p className="text-sm font-semibold text-white">
-            {loadState === 'error' ? 'Unable to load this demo' : loadState === 'slow' ? 'This demo is taking longer to load' : 'Loading demo…'}
+            {t(loadState === 'error' ? 'Unable to load this demo' : loadState === 'slow' ? 'This demo is taking longer to load' : 'Loading demo…')}
           </p>
           <p className="max-w-xs text-xs leading-relaxed text-text-secondary">
-            {loadState === 'loading' ? 'Preparing your playable demo. Please wait.' : 'Check your connection and try again, or choose another game.'}
+            {t(loadState === 'loading' ? 'Preparing your playable demo. Please wait.' : 'Check your connection and try again, or choose another game.')}
           </p>
           {loadState !== 'loading' && (
             <button type="button" onClick={restart} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-violet-400/50 px-4 py-2 text-sm text-white hover:bg-violet-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300">
-              <RotateCw size={14} aria-hidden="true" /> Try again
+              <RotateCw size={14} aria-hidden="true" /> {t('Try again')}
             </button>
           )}
         </div>
@@ -98,12 +101,12 @@ export default function PlayableFrame({ src, title, googlePlay, appStore }: Play
           <div className="my-auto w-full max-w-sm rounded-2xl border border-violet-400/40 bg-[#141720] p-5 text-center shadow-2xl sm:p-6">
             <div role="status" aria-live="polite">
               <CheckCircle2 className="mx-auto mb-3 text-violet-300" size={32} aria-hidden="true" />
-              <h4 className="font-display text-xl font-bold text-white">Demo complete!</h4>
+              <h4 className="font-display text-xl font-bold text-white">{t('Demo complete!')}</h4>
               <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-                You’ve reached the end of this playable demo. {googlePlay || appStore ? 'Get the full game from the store to keep playing.' : 'You can play again using the button below.'}
+                {t('You’ve reached the end of this playable demo.')} {t(googlePlay || appStore ? 'Get the full game from the store to keep playing.' : 'You can play again using the button below.')}
               </p>
               <p className="mt-2 text-xs leading-relaxed text-violet-200">
-                {googlePlay || appStore ? 'Available store links open in a new tab. Dimmed buttons have no link yet.' : 'Store links are not available for this game yet.'}
+                {t(googlePlay || appStore ? 'Available store links open in a new tab.' : 'Store links are not available for this game yet.')}
               </p>
             </div>
             <div className="mt-5 flex flex-col gap-2">
@@ -122,7 +125,7 @@ export default function PlayableFrame({ src, title, googlePlay, appStore }: Play
                 onClick={restart}
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-white/15 px-4 py-2 text-sm text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-300"
               >
-                <RotateCw size={14} aria-hidden="true" /> Play again
+                <RotateCw size={14} aria-hidden="true" /> {t('Play again')}
               </button>
             </div>
           </div>

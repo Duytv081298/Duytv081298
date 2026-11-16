@@ -1,19 +1,24 @@
 'use client';
 
+import { useReducedMotion } from '@/lib/useReducedMotion';
+
+import GameArtwork from '@/components/game/GameArtwork';
+import { profile } from '@/data/profile';
 import { useState } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { useLocale } from '@/components/i18n/LocaleProvider';
+import { motion } from 'motion/react';
 import { BriefcaseBusiness, Download, Gamepad2, Layers3, Play, Zap } from 'lucide-react';
-import { GithubIcon, FacebookIcon } from '@/components/ui/BrandIcons';
+import { GithubIcon, FacebookIcon, LinkedinIcon } from '@/components/ui/BrandIcons';
 import MagneticButton from '@/components/ui/MagneticButton';
 import GlowOrb from '@/components/effects/GlowOrb';
 import CVModal from '@/components/ui/CVModal';
 import { playableAds } from '@/data/playableAds';
 
 const stats = [
-  { value: '30+', label: 'Projects', color: '#3EA6FF', Icon: Layers3 },
-  { value: '5+', label: 'Years Exp.', color: '#00DFA2', Icon: Zap },
-  { value: '4', label: 'Companies', color: '#9B74FF', Icon: BriefcaseBusiness },
-  { value: 'HTML5', label: 'Cocos Creator', color: '#8AB4FF', Icon: Gamepad2 },
+  { value: '30+', label: 'projects', color: '#3EA6FF', Icon: Layers3 },
+  { value: profile.years, label: 'years', color: '#00DFA2', Icon: Zap },
+  { value: '4', label: 'companies', color: '#9B74FF', Icon: BriefcaseBusiness },
+  { value: 'HTML5', label: 'cocos', color: '#8AB4FF', Icon: Gamepad2 },
 ];
 
 const iconPositions = [
@@ -36,6 +41,7 @@ const iconPositions = [
 const heroGames = playableAds.filter((ad) => ad.icon).slice(0, iconPositions.length);
 
 export default function HeroSection() {
+  const { t } = useLocale();
   const reduceMotion = useReducedMotion();
   const [isCVModalOpen, setIsCVModalOpen] = useState(false);
 
@@ -66,7 +72,7 @@ export default function HeroSection() {
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_12px_rgba(0,217,126,0.8)]" />
               </span>
               <span className="font-code text-[11px] font-semibold uppercase tracking-[0.16em] text-text-secondary">
-                Available for new projects
+                {t('available')}
               </span>
             </motion.div>
 
@@ -82,10 +88,10 @@ export default function HeroSection() {
                 </span>
               </h1>
               <p className="mt-4 font-display text-lg font-semibold text-[#A8B6CB] lg:text-xl">
-                Cocos Developer
+                {t('role')}
               </p>
               <p className="mt-4 max-w-[570px] text-sm leading-7 text-text-secondary">
-                I build high-performance, engaging and scalable games and playable ads across Mobile, Web and Instant Platforms.
+                {t('intro')}
               </p>
             </motion.div>
 
@@ -104,7 +110,7 @@ export default function HeroSection() {
                   <span className="font-code text-base font-bold tabular-nums" style={{ color }}>
                     {value}
                   </span>
-                  <span className="text-[10px] leading-tight text-text-secondary">{label}</span>
+                  <span className="text-[10px] leading-tight text-text-secondary">{t(label as Parameters<typeof t>[0])}</span>
                 </div>
               ))}
             </motion.div>
@@ -113,15 +119,15 @@ export default function HeroSection() {
               initial={reduceMotion ? false : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.24 }}
-              className="mt-7 flex flex-col gap-3 sm:flex-row"
+              className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
             >
               <MagneticButton variant="primary" size="md" onClick={() => openGame('arrow')} className="min-h-12 min-w-[245px] text-sm font-semibold">
                 <Play size={15} fill="currentColor" aria-hidden="true" />
-                Play Demo Games
+                {t('play')}
               </MagneticButton>
               <MagneticButton variant="ghost" size="md" onClick={() => setIsCVModalOpen(true)} className="min-h-12 min-w-[225px] text-sm font-semibold">
                 <Download size={15} aria-hidden="true" />
-                Download CV
+                {t('cv')}
               </MagneticButton>
             </motion.div>
 
@@ -131,7 +137,7 @@ export default function HeroSection() {
               transition={{ duration: 0.45, delay: 0.32 }}
               className="mt-7 flex items-center gap-2.5"
             >
-              <span className="mr-1 font-code text-[9px] uppercase tracking-[0.2em] text-text-muted">Find me on</span>
+              <span className="mr-1 font-code text-[9px] uppercase tracking-[0.2em] text-text-muted">{t('social')}</span>
               <a
                 href="https://github.com/Duytv081298"
                 target="_blank"
@@ -141,6 +147,7 @@ export default function HeroSection() {
               >
                 <GithubIcon size={17} />
               </a>
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="grid size-11 place-items-center rounded-lg text-text-secondary transition-colors hover:bg-primary/10 hover:text-primary"><LinkedinIcon size={18} /></a>
               <a
                 href="https://web.facebook.com/Duytv98"
                 target="_blank"
@@ -153,7 +160,7 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          <div className="relative hidden h-[510px] lg:col-span-6 lg:block" aria-label="Featured game icons">
+          <div className="relative hidden h-[510px] lg:col-span-6 lg:block" role="group" aria-label={t('Featured game icons')}>
             <svg className="absolute inset-0 h-full w-full opacity-60" viewBox="0 0 620 510" fill="none" aria-hidden="true">
               <ellipse cx="330" cy="255" rx="282" ry="188" stroke="url(#hero-orbit)" strokeOpacity="0.28" />
               <ellipse cx="330" cy="255" rx="222" ry="142" stroke="url(#hero-orbit)" strokeOpacity="0.22" />
@@ -175,7 +182,7 @@ export default function HeroSection() {
                   key={game.slug}
                   type="button"
                   onClick={() => openGame(game.slug)}
-                  aria-label={`Play ${game.title}`}
+                  aria-label={t('Play {title}', { title: game.title })}
                   className="group absolute cursor-pointer rounded-[18px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   style={{ left: `${position.left}%`, top: `${position.top}%`, width: position.size, height: position.size }}
                   initial={reduceMotion ? false : { opacity: 0, scale: 0.75 }}
@@ -187,13 +194,8 @@ export default function HeroSection() {
                   }}
                   whileHover={reduceMotion ? undefined : { scale: 1.08, y: -4 }}
                 >
-                  <img
-                    src={game.icon}
-                    alt=""
-                    width={position.size}
-                    height={position.size}
-                    className="h-full w-full rounded-[18px] border border-white/20 object-cover shadow-[0_12px_28px_rgba(0,0,0,0.6),0_0_20px_rgba(62,166,255,0.12)] transition-shadow group-hover:shadow-[0_14px_32px_rgba(0,0,0,0.7),0_0_24px_rgba(62,166,255,0.3)]"
-                  />
+                  <GameArtwork src={game.icon} title={game.title} color={game.coverColor} secondary={game.coverColorSecondary}
+                    className="rounded-[18px] border border-white/20 shadow-[0_12px_28px_rgba(0,0,0,0.6)]" />
                 </motion.button>
               );
             })}

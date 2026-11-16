@@ -149,3 +149,61 @@
 </table>
 
 <p align="center">© 2025 Duytv · Built with 💜 and ☕</p>
+
+## Portfolio language and accessibility
+
+The website supports English, Vietnamese and Simplified Chinese. It checks a saved
+`portfolio-language` choice first, then the browser's preferred languages (regional
+variants such as `vi-VN`, `zh-TW` and `zh-Hans` are accepted), and falls back to
+English. Chinese variants currently use the Simplified Chinese translation.
+Changing language updates the document language, persists across visits when
+storage is available and synchronizes other open tabs. If storage is blocked,
+selection still works for the current session. Static HTML and social metadata
+are exported in English; language selection happens after hydration. The supplied English and Vietnamese PDFs are available unchanged. The CV dialog follows
+the interface language (Vietnamese → Vietnamese PDF; English/Chinese → English PDF),
+and includes an explicit language selector for viewing, downloading or copying either CV.
+The on-page summary, experience, skills and award support all three interface languages.
+Embedded game builds retain their original game content and language.
+
+Navigation uses real section links, visible keyboard focus and a skip link. Native
+modal dialogs contain keyboard focus, make the background inert, close with Escape
+and restore focus to their trigger. Motion follows the device's reduced-motion
+setting. No artificial loading screen or continuous background WebGL canvas is
+required to access the portfolio.
+
+### Checks
+
+Use Node.js 22.12 or later:
+
+```sh
+npm ci
+npm run lint -- --max-warnings=0
+npm run build
+npm run typecheck
+npx playwright install --with-deps chromium
+npm test
+```
+
+Playwright covers language detection and fallback, blocked storage, persistence,
+cross-tab synchronization, responsive layouts at 320/375/768/1024/1440px, keyboard
+navigation, CV/player controls, and automated WCAG A/AA checks with axe. Automated
+checks do not replace manual screen-reader testing. GitHub Actions runs these checks
+for pull requests to `main` and saves the report, traces and screenshots as artifacts.
+This check workflow does not deploy the site. The existing Pages workflow deploys
+only after changes land on `main` (or it is manually triggered).
+
+Translation copy lives in `src/components/i18n/messages.ts`; case study narratives
+live in `src/components/i18n/game-copy.ts`. Brand and technology names retain their
+original spelling. The static export uses trailing-slash routes so detail pages
+can be refreshed directly on GitHub Pages.
+
+
+### CV source of truth
+
+`src/data/profile.ts` holds the shared professional summary, four employers, education,
+skills and the 2024 PIXON award, aligned with the supplied November 2026 CVs. Career
+and CV views read this shared source. Original PDF files live at
+`public/cv/TRINH-VAN-DUY_EN.pdf` and `public/cv/TRINH-VAN-DUY_VN.pdf`.
+Legacy Vietnamese PDF URLs also serve the updated Vietnamese document. Performance
+cards now reflect the CV's 60 FPS target, 2–5 MB playable budgets, 70% reduction in
+manual deployment time and 6+ years of experience.

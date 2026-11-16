@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-heading",
@@ -26,7 +27,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Trịnh Văn Duy — Senior Game Developer | Playable Ads & Hyper Casual Games",
   description:
-    "Senior Game Developer specializing in Playable Ads, Hyper Casual Games, and Puzzle Games. Expert in Cocos Creator, performance optimization, and HTML5 game development. 30+ playable ads shipped.",
+    "Senior Game Developer with 6+ years of experience in Cocos Creator, Unity and HTML5/Instant Games. Scalable client architectures, playable-ad automation and mobile performance optimization.",
   keywords: [
     "Game Developer",
     "Playable Ads",
@@ -58,7 +59,7 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-bg-primary text-text antialiased">
-        {children}
+        <LocaleProvider>{children}</LocaleProvider>
       </body>
     </html>
   );

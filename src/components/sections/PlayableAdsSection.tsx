@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import {
   ChevronDown,
   ChevronUp,
@@ -12,6 +12,10 @@ import {
   Smartphone,
   X,
 } from 'lucide-react';
+import { useLocale } from '@/components/i18n/LocaleProvider';
+import Modal from '@/components/ui/Modal';
+import GameArtwork from '@/components/game/GameArtwork';
+import { useReducedMotion } from '@/lib/useReducedMotion';
 import SectionHeader from '@/components/ui/SectionHeader';
 import PlayableFrame from '@/components/game/PlayableFrame';
 import StoreLink from '@/components/game/StoreLink';
@@ -22,7 +26,7 @@ const getCategorySvg = (category: string) => {
   switch (category) {
     case 'puzzle':
       return (
-        <svg className="w-9 h-9 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="size-11 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
           <path d="M7.5 10.5h9v3h-9z" fill="currentColor" fillOpacity="0.25" />
           <path d="M10.5 7.5h3v9h-3z" fill="currentColor" fillOpacity="0.25" />
@@ -30,7 +34,7 @@ const getCategorySvg = (category: string) => {
       );
     case 'hyper-casual':
       return (
-        <svg className="w-9 h-9 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="size-11 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="6" width="20" height="12" rx="3" fill="currentColor" fillOpacity="0.25" />
           <path d="M6 12h4M8 10v4" />
           <circle cx="15.5" cy="12" r="1" fill="currentColor" stroke="none" />
@@ -39,7 +43,7 @@ const getCategorySvg = (category: string) => {
       );
     case 'sorting':
       return (
-        <svg className="w-9 h-9 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="size-11 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <path d="M6 3v15a3 3 0 0 0 3 3h0a3 3 0 0 0 3-3V3M18 3v8a3 3 0 0 0 3 3h0a3 3 0 0 0 3-3V3" />
           <line x1="4" y1="3" x2="14" y2="3" />
           <line x1="16" y1="3" x2="22" y2="3" />
@@ -49,14 +53,14 @@ const getCategorySvg = (category: string) => {
       );
     case 'screw':
       return (
-        <svg className="w-9 h-9 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="size-11 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 2v20M9 5h6M9 9h6M9 13h6M9 17h6" />
           <rect x="7" y="2" width="10" height="3" rx="1" fill="currentColor" fillOpacity="0.25" />
         </svg>
       );
     case 'simulation':
       return (
-        <svg className="w-9 h-9 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="size-11 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 22V9l9-6 9 6v13H3z" fill="currentColor" fillOpacity="0.25" />
           <rect x="9" y="15" width="6" height="7" fill="currentColor" fillOpacity="0.2" />
           <circle cx="9" cy="9" r="1" fill="currentColor" stroke="none" />
@@ -65,7 +69,7 @@ const getCategorySvg = (category: string) => {
       );
     default:
       return (
-        <svg className="w-9 h-9 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="size-11 text-white/90 drop-shadow-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="6" width="20" height="12" rx="3" fill="currentColor" fillOpacity="0.25" />
           <path d="M6 12h4M8 10v4" />
         </svg>
@@ -76,6 +80,8 @@ const getCategorySvg = (category: string) => {
 const INITIAL_VISIBLE_ADS = 10;
 
 export default function PlayableAdsSection() {
+  const { t } = useLocale();
+  const reduceMotion = useReducedMotion();
   const [activeFilter, setActiveFilter] = useState('all');
   const [showAllAds, setShowAllAds] = useState(false);
   const [activeAd, setActiveAd] = useState<PlayableAd | null>(null);
@@ -84,6 +90,8 @@ export default function PlayableAdsSection() {
   const [activeBuildIndex, setActiveBuildIndex] = useState<number>(0);
   const [reloadKey, setReloadKey] = useState<number>(0);
   const [highlightedAdId, setHighlightedAdId] = useState<string | null>(null);
+  const playerOpener = useRef<HTMLElement | null>(null);
+  const playerOpen = useRef(false);
   const pendingPlayTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const cancelPendingPlay = useCallback(() => {
@@ -92,6 +100,8 @@ export default function PlayableAdsSection() {
   }, []);
 
   const openPlayer = useCallback((ad: PlayableAd) => {
+    if (!playerOpen.current) playerOpener.current = document.activeElement as HTMLElement | null;
+    playerOpen.current = true;
     cancelPendingPlay();
     setHighlightedAdId(null);
     setActiveAd(ad);
@@ -120,11 +130,11 @@ export default function PlayableAdsSection() {
         pendingPlayTimers.current.push(setTimeout(() => {
           const cardElement = document.getElementById(`playable-ad-${ad.slug}`);
           if (cardElement) {
-            cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            cardElement.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' });
           } else {
             const section = document.getElementById('playable');
             if (section) {
-              section.scrollIntoView({ behavior: 'smooth' });
+              section.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
             }
           }
         }, 100));
@@ -169,6 +179,7 @@ export default function PlayableAdsSection() {
   };
 
   const closePlayer = () => {
+    playerOpen.current = false;
     cancelPendingPlay();
     setActiveAd(null);
     setIsFullscreen(false);
@@ -182,26 +193,26 @@ export default function PlayableAdsSection() {
           <SectionHeader
             id="playable"
             index="01"
-            title="Playable Ads"
-            subtitle={`${playableAds.length} playable ads shipped. Click "Play" to try them directly in your browser.`}
+            title={t('Playable Ads')}
+            subtitle={t('{count} playable ads shipped. Choose a game to play in your browser.', { count: playableAds.length })}
             className="mb-0 min-w-0 flex-1 lg:max-w-xl"
           />
 
           <RevealOnScroll className="w-full shrink-0 lg:w-auto lg:pb-0.5">
-            <div className="grid w-full grid-cols-3 lg:min-w-[390px]" aria-label="Playable ads statistics">
+            <div className="grid w-full grid-cols-3 lg:min-w-[390px]" role="group" aria-label={t('Playable ads statistics')}>
               <div className="flex min-w-0 flex-col px-3 sm:px-5 lg:pl-0">
                 <span className="font-code text-lg font-bold leading-none text-primary sm:text-xl">
                   {playableAds.length}+
                 </span>
-                <span className="mt-1 text-[10px] text-text-secondary sm:text-xs">Total Games</span>
+                <span className="mt-1 text-[10px] text-text-secondary sm:text-xs">{t('Total Games')}</span>
               </div>
               <div className="flex min-w-0 flex-col border-l border-border/70 px-3 sm:px-5">
                 <span className="font-code text-lg font-bold leading-none text-accent sm:text-xl">{'<5MB'}</span>
-                <span className="mt-1 text-[10px] text-text-secondary sm:text-xs">Each</span>
+                <span className="mt-1 text-[10px] text-text-secondary sm:text-xs">{t('Each')}</span>
               </div>
               <div className="flex min-w-0 flex-col border-l border-border/70 px-3 sm:px-5 lg:pr-0">
-                <span className="font-code text-lg font-bold leading-none text-purple sm:text-xl">Playable</span>
-                <span className="mt-1 text-[10px] text-text-secondary sm:text-xs">In Browser</span>
+                <span className="font-code text-lg font-bold leading-none text-purple sm:text-xl">{t('Playable')}</span>
+                <span className="mt-1 text-[10px] text-text-secondary sm:text-xs">{t('In Browser')}</span>
               </div>
             </div>
           </RevealOnScroll>
@@ -211,14 +222,14 @@ export default function PlayableAdsSection() {
         <div
           className="scrollbar-none -mx-4 mb-5 flex items-center gap-1.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0"
           role="group"
-          aria-label="Filter playable ads by category"
+          aria-label={t('Filter playable ads by category')}
         >
           {playableCategories.map((cat) => (
             <button
               type="button"
               key={cat.value}
               onClick={() => setActiveFilter(cat.value)}
-              aria-label={`Show ${cat.label} playable ads`}
+              aria-label={t('Show {category} playable ads', { category: t(cat.label) })}
               aria-pressed={activeFilter === cat.value}
               className={`whitespace-nowrap rounded-md border px-3 py-1.5 text-[11px] font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary ${
                 activeFilter === cat.value
@@ -226,18 +237,17 @@ export default function PlayableAdsSection() {
                   : 'border-border/70 bg-card/60 text-text-secondary hover:border-border-hover hover:text-text'
               }`}
             >
-              {cat.label}
+              {t(cat.label)}
             </button>
           ))}
         </div>
 
         {/* Grid */}
-        <AnimatePresence mode="wait">
           <motion.div
             id="playable-ads-grid"
             key={activeFilter}
             className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 lg:gap-[18px]"
-            initial={{ opacity: 0, y: 20 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
@@ -250,7 +260,7 @@ export default function PlayableAdsSection() {
                   key={ad.id}
                   id={`playable-ad-${ad.slug}`}
                   className="group relative block w-full appearance-none rounded-xl bg-transparent p-0 text-inherit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary"
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={reduceMotion ? false : { opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.03 }}
@@ -259,7 +269,7 @@ export default function PlayableAdsSection() {
                     y: -10,
                   } : { scale: 1, y: 0 }}
                   onClick={() => openPlayer(ad)}
-                  aria-label={`Play ${ad.title}`}
+                  aria-label={t('Play {title}', { title: ad.title })}
                 >
                   {/* Card */}
                   <div
@@ -273,13 +283,6 @@ export default function PlayableAdsSection() {
                       <div className="pointer-events-none absolute inset-0 z-20 animate-pulse rounded-xl border-2 border-primary" />
                     )}
                     {/* Blurred icon and color wash keep each card tied to its game art. */}
-                    {ad.icon ? (
-                      <img
-                        src={ad.icon}
-                        alt=""
-                        className="pointer-events-none absolute inset-0 h-full w-full scale-125 object-cover opacity-[0.14] blur-2xl transition-transform duration-500 group-hover:scale-[1.35]"
-                      />
-                    ) : null}
                     <div
                       className="pointer-events-none absolute inset-0 opacity-[0.16] transition-opacity duration-300 group-hover:opacity-[0.22]"
                       style={{
@@ -291,11 +294,8 @@ export default function PlayableAdsSection() {
                     <div className="relative z-10 flex w-full flex-col items-center justify-center">
                       <div className="relative h-14 w-14 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-105 sm:h-16 sm:w-16 lg:h-[68px] lg:w-[68px]">
                         {ad.icon ? (
-                          <img
-                            src={ad.icon}
-                            alt={`${ad.title} icon`}
-                            className="h-full w-full rounded-[22%] border border-white/15 object-cover shadow-[0_8px_18px_rgba(0,0,0,0.4)]"
-                          />
+                          <GameArtwork src={ad.icon} title={ad.title} color={ad.coverColor} secondary={ad.coverColorSecondary}
+                            className="rounded-[22%] border border-white/15 shadow-[0_8px_18px_rgba(0,0,0,0.4)]" />
                         ) : (
                           <div
                             className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-[22%] border border-white/15 p-2 shadow-[0_8px_18px_rgba(0,0,0,0.4)]"
@@ -324,7 +324,7 @@ export default function PlayableAdsSection() {
                         {ad.title}
                       </span>
                       <span className="mt-2 inline-flex rounded-full border border-white/10 bg-white/[0.045] px-2 py-0.5 font-code text-[8px] capitalize leading-none text-text-secondary backdrop-blur-md transition-colors duration-200 group-hover:border-primary/20 group-hover:text-text">
-                        {ad.category.replace('-', ' ')}
+                        {t(playableCategories.find((category) => category.value === ad.category)?.label ?? ad.category)}
                       </span>
                     </div>
                   </div>
@@ -332,7 +332,6 @@ export default function PlayableAdsSection() {
               );
             })}
           </motion.div>
-        </AnimatePresence>
 
         {activeFilter === 'all' && filteredAds.length > INITIAL_VISIBLE_ADS && (
           <div className="mt-5 flex justify-center">
@@ -343,40 +342,24 @@ export default function PlayableAdsSection() {
               aria-expanded={showAllAds}
               className="inline-flex items-center gap-2 rounded-lg border border-primary/35 bg-bg-primary/30 px-4 py-2 font-code text-[11px] font-medium text-primary transition-colors duration-200 hover:border-primary/60 hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-primary"
             >
-              {showAllAds ? 'Show Fewer Playable Ads' : 'View More Playable Ads'}
+              {t(showAllAds ? 'Show Fewer Playable Ads' : 'View More Playable Ads')}
               {showAllAds ? <ChevronUp size={14} aria-hidden="true" /> : <ChevronDown size={14} aria-hidden="true" />}
             </button>
           </div>
         )}
       </div>
 
-      {/* Player Modal */}
-      <AnimatePresence>
+      <Modal open={!!activeAd} returnFocus={playerOpener} onClose={closePlayer} label={activeAd?.title ?? t('Playable Ads')}>
         {activeAd && (
-          <motion.div
-            className={`fixed z-[100] flex items-center justify-center transition-all ${
-              isFullscreen ? 'inset-x-0 bottom-0 top-[82px] p-0' : 'inset-0 p-4 md:p-6'
-            }`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {/* Backdrop */}
-            <div
-              className="absolute inset-0 bg-bg-primary/95 backdrop-blur-md"
-              onClick={closePlayer}
-            />
-
-            {/* Split Player Container */}
             <motion.div
               className={`relative z-10 flex flex-col md:flex-row items-stretch bg-[#141720] border border-border/80 overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] ${
                 isFullscreen
-                  ? 'w-full h-full rounded-none'
+                  ? 'w-full h-full rounded-xl'
                   : isLandscape
-                    ? 'w-full h-[85vh] md:w-[1160px] md:h-[620px] rounded-2xl'
-                    : 'w-full h-[85vh] md:w-[840px] md:h-[620px] rounded-2xl'
+                    ? 'w-full max-w-[1160px] h-[90dvh] md:h-[min(720px,90dvh)] rounded-2xl'
+                    : 'w-full max-w-[940px] h-[90dvh] md:h-[min(720px,90dvh)] rounded-2xl'
               } transition-all duration-300`}
-              initial={{ scale: 0.95, opacity: 0 }}
+              initial={reduceMotion ? false : { scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 350, damping: 28 }}
@@ -386,8 +369,8 @@ export default function PlayableAdsSection() {
                 isFullscreen
                   ? 'w-full h-full p-0'
                   : isLandscape
-                    ? 'w-full md:w-[670px] h-[50%] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-border/30 p-0'
-                    : 'w-full md:w-[350px] h-[55%] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-border/30 p-0'
+                    ? 'w-full md:w-[55%] lg:w-[60%] h-[55%] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-border/30 p-0'
+                    : 'w-full md:w-[42%] lg:w-[350px] h-[55%] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-border/30 p-0'
               } transition-all duration-300`}>
                   <div className={`relative overflow-hidden bg-black mx-auto transition-all ${
                     isFullscreen && !isLandscape
@@ -413,14 +396,14 @@ export default function PlayableAdsSection() {
                     <button
                       onClick={() => setIsFullscreen(false)}
                       className="p-2 rounded-lg bg-black/60 backdrop-blur-md border border-border/50 text-text hover:text-primary hover:bg-black transition-all"
-                      title="Exit Fullscreen"
+                      aria-label={t('Exit Fullscreen')} title={t('Exit Fullscreen')}
                     >
                       <Minimize2 size={16} />
                     </button>
                     <button
                       onClick={closePlayer}
                       className="p-2 rounded-lg bg-black/60 backdrop-blur-md border border-border/50 text-text hover:text-danger hover:bg-black transition-all"
-                      title="Close Game"
+                      aria-label={t('Close Game')} title={t('Close Game')}
                     >
                       <X size={16} />
                     </button>
@@ -431,7 +414,7 @@ export default function PlayableAdsSection() {
               {/* Info & Config Column (Only show when not fullscreen) */}
               {!isFullscreen && (
                 <div
-                  className="flex-1 flex flex-col justify-between p-6 md:p-8 overflow-y-auto h-[50%] md:h-full border-t md:border-t-0 border-border/30"
+                  className="flex-1 flex flex-col justify-between p-3 sm:p-5 md:p-6 overflow-y-auto min-h-0 h-[45%] md:h-full border-t md:border-t-0 border-border/30"
                   style={{
                     backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
                     backgroundSize: '24px 24px',
@@ -440,20 +423,20 @@ export default function PlayableAdsSection() {
                 >
                   {/* Top Bar with Quick Controls */}
                   <div className="flex items-center justify-end border-b border-violet-500/30 pb-3.5">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center flex-wrap gap-2">
                       <button
                         onClick={handlePrevAd}
-                        className="h-9 px-4.5 rounded-lg text-violet-300 hover:text-white bg-violet-500/5 hover:bg-violet-500/20 border border-violet-500/50 hover:border-violet-400 shadow-[0_0_12px_rgba(168,85,247,0.18)] transition-all text-xs font-code font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
-                        title="Previous Game"
+                        className="min-h-11 px-3 rounded-lg text-violet-300 hover:text-white bg-violet-500/5 hover:bg-violet-500/20 border border-violet-500/50 hover:border-violet-400 shadow-[0_0_12px_rgba(168,85,247,0.18)] transition-all text-xs font-code font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
+                        aria-label={t('Previous Game')} title={t('Previous Game')}
                       >
-                        ← PREV
+                        ← {t('Previous')}
                       </button>
                       <button
                         onClick={handleNextAd}
-                        className="h-9 px-4.5 rounded-lg text-violet-300 hover:text-white bg-violet-500/5 hover:bg-violet-500/20 border border-violet-500/50 hover:border-violet-400 shadow-[0_0_12px_rgba(168,85,247,0.18)] transition-all text-xs font-code font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
-                        title="Next Game"
+                        className="min-h-11 px-3 rounded-lg text-violet-300 hover:text-white bg-violet-500/5 hover:bg-violet-500/20 border border-violet-500/50 hover:border-violet-400 shadow-[0_0_12px_rgba(168,85,247,0.18)] transition-all text-xs font-code font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
+                        aria-label={t('Next Game')} title={t('Next Game')}
                       >
-                        NEXT →
+                        {t('Next')} →
                       </button>
                       <button
                         onClick={() => setIsLandscape(!isLandscape)}
@@ -462,28 +445,28 @@ export default function PlayableAdsSection() {
                             ? 'bg-violet-500/20 border-violet-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.35)]'
                             : 'bg-transparent border-violet-500/50 text-violet-300 hover:bg-violet-500/20 hover:text-white hover:border-violet-400 shadow-[0_0_12px_rgba(168,85,247,0.18)]'
                         }`}
-                        title="Rotate Simulator"
+                        aria-label={t('Rotate Simulator')} title={t('Rotate Simulator')}
                       >
                         <Smartphone size={15} className={isLandscape ? 'rotate-90 transition-transform duration-300' : 'transition-transform duration-300'} />
                       </button>
                       <button
                         onClick={() => setReloadKey(prev => prev + 1)}
-                        className="w-9 h-9 rounded-full border border-violet-500/50 flex items-center justify-center bg-violet-500/5 text-violet-300 hover:text-white hover:bg-violet-500/20 hover:border-violet-400 shadow-[0_0_12px_rgba(168,85,247,0.18)] transition-all"
-                        title="Reload Game"
+                        className="size-11 rounded-full border border-violet-500/50 flex items-center justify-center bg-violet-500/5 text-violet-300 hover:text-white hover:bg-violet-500/20 hover:border-violet-400 shadow-[0_0_12px_rgba(168,85,247,0.18)] transition-all"
+                        aria-label={t('Reload Game')} title={t('Reload Game')}
                       >
                         <RotateCw size={15} />
                       </button>
                       <button
                         onClick={() => setIsFullscreen(true)}
-                        className="w-9 h-9 rounded-full border border-violet-500/50 flex items-center justify-center bg-violet-500/5 text-violet-300 hover:text-white hover:bg-violet-500/20 hover:border-violet-400 shadow-[0_0_12px_rgba(168,85,247,0.18)] transition-all"
-                        title="Maximize Player"
+                        className="size-11 rounded-full border border-violet-500/50 flex items-center justify-center bg-violet-500/5 text-violet-300 hover:text-white hover:bg-violet-500/20 hover:border-violet-400 shadow-[0_0_12px_rgba(168,85,247,0.18)] transition-all"
+                        aria-label={t('Maximize Player')} title={t('Maximize Player')}
                       >
                         <Maximize2 size={15} />
                       </button>
                       <button
                         onClick={closePlayer}
-                        className="w-9 h-9 rounded-full border border-violet-500/50 flex items-center justify-center bg-violet-500/5 text-violet-300 hover:text-danger hover:bg-danger/15 hover:border-danger/35 shadow-[0_0_12px_rgba(168,85,247,0.18)] transition-all"
-                        title="Close Panel"
+                        className="size-11 rounded-full border border-violet-500/50 flex items-center justify-center bg-violet-500/5 text-violet-300 hover:text-danger hover:bg-danger/15 hover:border-danger/35 shadow-[0_0_12px_rgba(168,85,247,0.18)] transition-all"
+                        aria-label={t('Close Panel')} title={t('Close Panel')}
                       >
                         <X size={15} />
                       </button>
@@ -493,10 +476,10 @@ export default function PlayableAdsSection() {
                   {/* Variant Switcher (If multiple versions exist) */}
                   {activeAd.demoBuilds && activeAd.demoBuilds.length > 1 && (
                     <div className="mb-4 mt-4 bg-[#141720]/45 border border-violet-500/45 p-3 rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.12)]">
-                      <label className="text-[9px] text-violet-400/80 font-code block uppercase tracking-widest mb-1.5 font-bold">
-                        Select Build Version / Variant ({activeAd.demoBuilds.length})
+                      <label htmlFor="playable-version" className="text-[9px] text-violet-400/80 font-code block uppercase tracking-widest mb-1.5 font-bold">
+                        {t('Build version')} ({activeAd.demoBuilds.length})
                       </label>
-                      <select
+                      <select id="playable-version"
                         value={activeBuildIndex}
                         onChange={(e) => {
                           const idx = parseInt(e.target.value);
@@ -506,7 +489,7 @@ export default function PlayableAdsSection() {
                       >
                         {activeAd.demoBuilds.map((build, i) => (
                           <option key={i} value={i}>
-                            🎮 Version {i + 1}
+                            {t('Version {number}', { number: i + 1 })}
                           </option>
                         ))}
                       </select>
@@ -519,11 +502,7 @@ export default function PlayableAdsSection() {
                       {/* Preview Image / Fallback */}
                       <div className="w-36 h-36 md:w-40 md:h-40 rounded-xl overflow-hidden bg-black flex items-center justify-center border border-violet-500/70 shadow-[0_0_25px_rgba(168,85,247,0.45)] mb-6">
                         {activeAd.icon ? (
-                          <img
-                            src={activeAd.icon}
-                            alt={activeAd.title}
-                            className="w-full h-full object-cover"
-                          />
+                          <GameArtwork src={activeAd.icon} title={activeAd.title} color={activeAd.coverColor} secondary={activeAd.coverColorSecondary} sizes="160px" />
                         ) : (
                           <div
                             className="w-full h-full flex flex-col items-center justify-center p-4 relative overflow-hidden"
@@ -553,7 +532,7 @@ export default function PlayableAdsSection() {
                       <div className="flex items-center justify-center gap-3 w-full max-w-[280px] mx-auto mb-6 text-violet-400/80">
                         <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-violet-500/50" />
                         <span className="font-code text-[9px] uppercase tracking-[0.25em] font-bold">
-                          • Playable Ads •
+                          • {t('Playable Ads')} •
                         </span>
                         <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-violet-500/50" />
                       </div>
@@ -582,7 +561,7 @@ export default function PlayableAdsSection() {
 
                       {/* Game Description */}
                       <p className="text-white font-display font-bold text-sm md:text-base leading-relaxed max-w-md mb-6">
-                        {activeAd.description || 'Coming soon...'}
+                        {activeAd.description ? t(activeAd.description) : t('Try this {category} game in your browser.', { category: t(playableCategories.find((category) => category.value === activeAd.category)?.label ?? activeAd.category) })}
                       </p>
 
 
@@ -620,9 +599,8 @@ export default function PlayableAdsSection() {
                 </div>
               )}
             </motion.div>
-          </motion.div>
         )}
-      </AnimatePresence>
+      </Modal>
     </section>
   );
 }

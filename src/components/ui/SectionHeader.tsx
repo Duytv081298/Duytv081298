@@ -1,114 +1,32 @@
-import { type ReactNode, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+'use client';
+
+import { useState, type ReactNode } from 'react';
 import { Link as LinkIcon } from 'lucide-react';
+import { useLocale } from '@/components/i18n/LocaleProvider';
 
 interface SectionHeaderProps {
-  title: ReactNode;
-  subtitle?: string;
-  accent?: string;
-  icon?: ReactNode;
-  align?: 'left' | 'center';
-  index?: string;
-  className?: string;
-  id?: string;
+  title: ReactNode; subtitle?: string; accent?: string; icon?: ReactNode;
+  align?: 'left' | 'center'; index?: string; className?: string; id?: string;
 }
-
-export default function SectionHeader({
-  title,
-  subtitle,
-  accent,
-  icon,
-  align = 'left',
-  index,
-  className,
-  id,
-}: SectionHeaderProps) {
-  const [copied, setCopied] = useState(false);
-  const isCenter = align === 'center';
-  const accentLabel = accent?.replace(/_/g, ' ');
-
-  const handleCopyLink = () => {
-    if (!id) return;
-    const shareUrl = `${window.location.origin}${window.location.pathname}#${id}`;
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+export default function SectionHeader({ title, subtitle, accent, icon, align = 'left', index, className, id }: SectionHeaderProps) {
+  const { t } = useLocale();
+  const [status, setStatus] = useState('');
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}#${id}`);
+      setStatus('Link copied!');
+    } catch { setStatus('Unable to copy. Use your browser address bar to copy the link.'); }
   };
-
-  const handleContextMenu = (e: React.MouseEvent) => {
-    if (!id) return;
-    e.preventDefault();
-    handleCopyLink();
-  };
-
   return (
-    <header
-      className={`${className ?? 'mb-7'} ${isCenter ? 'text-center' : 'text-left'}`}
-      data-section-index={index}
-    >
-      {accentLabel && (
-        <p
-          className={`mb-1.5 font-code text-[10px] font-bold uppercase tracking-[0.14em] text-primary ${
-            isCenter ? 'mx-auto' : ''
-          }`}
-        >
-          {accentLabel}
-        </p>
-      )}
-
-      <div className={`flex items-center gap-3 ${isCenter ? 'justify-center' : ''} relative`}>
-        {icon && (
-          <span className="flex size-9 shrink-0 items-center justify-center text-primary" aria-hidden="true">
-            {icon}
-          </span>
-        )}
-        <h2 
-          onContextMenu={handleContextMenu}
-          className="group/title relative flex items-center gap-2 font-display text-[2rem] font-bold leading-[1.08] tracking-[-0.035em] text-text md:text-[2.5rem] cursor-pointer select-none"
-          title={id ? "Right-click to copy link to this section" : undefined}
-        >
-          <span>{title}</span>
-          {id && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleCopyLink();
-              }}
-              type="button"
-              className="opacity-0 group-hover/title:opacity-100 transition-opacity duration-200 text-text-secondary hover:text-primary p-1 rounded-md hover:bg-card cursor-pointer"
-              aria-label={`Copy link to ${title} section`}
-              title="Copy link to this section"
-            >
-              <LinkIcon size={18} />
-            </button>
-          )}
-          
-          <AnimatePresence>
-            {copied && (
-              <motion.span
-                initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                animate={{ opacity: 1, y: -25, scale: 1 }}
-                exit={{ opacity: 0, y: -15, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="absolute left-0 top-0 z-20 rounded-md bg-[#050b17] border border-violet-500/40 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400 shadow-[0_0_12px_rgba(168,85,247,0.25)]"
-              >
-                Link Copied!
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </h2>
+    <header className={`${className ?? 'mb-7'} ${align === 'center' ? 'text-center' : 'text-left'}`} data-section-index={index}>
+      {accent && <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">{t(accent)}</p>}
+      <div className={`flex items-center gap-3 ${align === 'center' ? 'justify-center' : ''}`}>
+        {icon && <span className="shrink-0 text-primary" aria-hidden="true">{icon}</span>}
+        <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-text md:text-4xl">{title}</h2>
+        {id && <button type="button" onClick={copyLink} aria-label={`${t('Copy section link')}: ${typeof title === 'string' ? title : ''}`} className="grid size-11 shrink-0 place-items-center rounded-lg text-text-secondary transition-colors hover:bg-card hover:text-primary"><LinkIcon size={18} aria-hidden="true" /></button>}
       </div>
-
-      {subtitle && (
-        <p
-          className={`mt-1.5 text-[13px] leading-5 text-text-secondary md:text-sm ${
-            isCenter ? 'mx-auto max-w-2xl' : 'max-w-3xl'
-          }`}
-        >
-          {subtitle}
-        </p>
-      )}
+      <p role="status" className={status ? 'mt-2 text-xs text-primary' : 'sr-only'}>{status && t(status)}</p>
+      {subtitle && <p className={`mt-2 text-sm leading-relaxed text-text-secondary ${align === 'center' ? 'mx-auto max-w-2xl' : 'max-w-3xl'}`}>{subtitle}</p>}
     </header>
   );
 }

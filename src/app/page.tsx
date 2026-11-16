@@ -1,9 +1,7 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import LoadingScreen from '@/components/layout/LoadingScreen';
 import HeroSection from '@/components/sections/HeroSection';
 import PlayableAdsSection from '@/components/sections/PlayableAdsSection';
 import FeaturedGamesSection from '@/components/sections/FeaturedGamesSection';
@@ -15,27 +13,19 @@ import GridBackground from '@/components/effects/GridBackground';
 import MouseSpotlight from '@/components/effects/MouseSpotlight';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 
-// Dynamic import for Three.js (client-only, no SSR)
-const ParticleField = dynamic(
-  () => import('@/components/effects/ParticleField'),
-  { ssr: false }
-);
-
 export default function Home() {
   return (
     <>
-      <LoadingScreen />
 
       {/* Background Effects */}
       <GridBackground />
-      <ParticleField />
       <MouseSpotlight />
 
       {/* Navigation */}
       <Navbar />
 
       {/* Main Content */}
-      <main className="relative z-10">
+      <main id="main-content" tabIndex={-1} className="relative z-10">
         <HeroSection />
         
         <RevealOnScroll direction="up" duration={0.85} delay={0.05}>

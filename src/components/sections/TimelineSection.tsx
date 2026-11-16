@@ -1,5 +1,7 @@
 'use client';
 
+import { profile } from '@/data/profile';
+import { useLocale } from '@/components/i18n/LocaleProvider';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -10,7 +12,7 @@ import {
   GraduationCap, 
   Building2, 
   Briefcase, 
-  Sparkles,
+  Trophy,
   CheckCircle2
 } from 'lucide-react';
 import SectionHeader from '@/components/ui/SectionHeader';
@@ -18,95 +20,31 @@ import SectionHeader from '@/components/ui/SectionHeader';
 interface TimelineItem {
   id: string;
   year: string;
-  category: 'work' | 'education';
+  category: 'work' | 'education' | 'award';
   company: string;
   role: string;
-  highlights: string[];
-  tech: string[];
+  highlights: readonly string[];
+  tech: readonly string[];
   color: string;
   icon: typeof Gamepad2;
 }
 
+const workStyles = [
+  { color: '#00D97E', icon: Wrench }, { color: '#3EA6FF', icon: Gamepad2 },
+  { color: '#9B74FF', icon: Layers }, { color: '#FF6B6B', icon: Code2 },
+];
+const workTimeline = profile.experience.map((job, index) => ({ ...job, year: job.period, category: 'work' as const, ...workStyles[index] }));
 const timeline: TimelineItem[] = [
-  {
-    id: 'pixon',
-    year: '2024 - Nay',
-    category: 'work',
-    company: 'PIXON',
-    role: 'Game Developer',
-    highlights: [
-      'Tạo Playable Ads chất lượng cao với Cocos Creator và Unity.',
-      'Tạo Tool build Playable Ads tự động hóa quy trình xuất file đa nền tảng.'
-    ],
-    tech: ['Cocos Creator', 'Unity', 'Playable Ads', 'Tool Build', 'TypeScript'],
-    color: '#00D97E',
-    icon: Wrench,
-  },
-  {
-    id: 'game-zoka',
-    year: '2023 - 2024',
-    category: 'work',
-    company: 'GAME ZOKA',
-    role: 'Game Developer',
-    highlights: [
-      'Tìm kiếm, phân tích, đánh giá và lựa chọn game để xây dựng và phát triển.',
-      'Phân chia công việc phát triển game trong team.',
-      'Phát triển Instant games trên nền tảng Facebook bằng Cocos Creator.',
-      'Sử dụng PlayFab để lưu trữ dữ liệu người dùng & tạo hệ thống Leaderboard.',
-      'Lập trình FrontEnd cho các game bài Realtime bằng Cocos Creator.'
-    ],
-    tech: ['Cocos Creator', 'Facebook Instant Games', 'PlayFab', 'Realtime Multiplayer'],
-    color: '#3EA6FF',
-    icon: Gamepad2,
-  },
-  {
-    id: 'sonat-studio',
-    year: '2021 - 2022',
-    category: 'work',
-    company: 'SONAT STUDIO',
-    role: 'Game Developer',
-    highlights: [
-      'Tạo Playable Ads với thư viện PixiJS và CreateJS tối ưu dung lượng.',
-      'Phát triển Instant games trên nền tảng Facebook.',
-      'Phát triển game puzzle với engine Unity.'
-    ],
-    tech: ['PixiJS', 'CreateJS', 'Facebook Instant Games', 'Unity', 'C#'],
-    color: '#9B74FF',
-    icon: Layers,
-  },
-  {
-    id: 'fpt-software',
-    year: '2019 - 2020',
-    category: 'work',
-    company: 'FPT SOFTWARE',
-    role: 'Fresher JavaScript',
-    highlights: [
-      'Sử dụng các ngôn ngữ lập trình web cơ bản HTML5, CSS3, JavaScript.',
-      'Xây dựng ứng dụng web với JavaScript Framework (Angular).'
-    ],
-    tech: ['JavaScript', 'Angular', 'HTML5', 'CSS3'],
-    color: '#FF6B6B',
-    icon: Code2,
-  },
-  {
-    id: 'fpt-greenwich',
-    year: '2016 - 2020',
-    category: 'education',
-    company: 'ĐẠI HỌC FPT - GREENWICH VIỆT NAM',
-    role: 'Cử Nhân Công Nghệ Thông Tin',
-    highlights: [
-      'Chuyên ngành: Công nghệ thông tin',
-      'Tốt nghiệp Xếp loại: GIỎI',
-      'Xây dựng nền tảng vững chắc về Khoa học Máy tính & Lập trình Game.'
-    ],
-    tech: ['Information Technology', 'BSc Honors', 'Graduated with Distinction'],
-    color: '#FFD93D',
-    icon: GraduationCap,
-  },
+  workTimeline[0],
+  { id: 'pixon-award', year: profile.award.year, category: 'award', company: profile.award.company, role: profile.award.title, highlights: [], tech: [], color: '#FFD93D', icon: Trophy },
+  ...workTimeline.slice(1),
+  { id: 'fpt-greenwich', year: profile.education.period, category: 'education', company: profile.education.school, role: profile.education.degree,
+    highlights: ['Information Technology', 'Graduated with an Excellent classification'], tech: ['Information Technology'], color: '#FFD93D', icon: GraduationCap },
 ];
 
 export default function TimelineSection() {
-  const [filter, setFilter] = useState<'all' | 'work' | 'education'>('all');
+  const { t } = useLocale();
+  const [filter, setFilter] = useState<'all' | 'work' | 'education' | 'award'>('all');
 
   const filteredTimeline = timeline.filter(
     (item) => filter === 'all' || item.category === filter
@@ -121,30 +59,32 @@ export default function TimelineSection() {
         <SectionHeader
           id="career"
           index="04"
-          title="My Journey"
-          subtitle="Hành trình phát triển từ Fresher Lập Trình đến Game & Playable Ads Developer chuyên nghiệp."
+          title={t('My Journey')}
+          subtitle={t('From JavaScript development to games and playable ads.')}
         />
 
         {/* Category Filters */}
         <div className="mb-10 flex flex-wrap items-center justify-center gap-2">
           {[
-            { id: 'all', label: 'Tất cả mốc', count: timeline.length },
-            { id: 'work', label: 'Kinh nghiệm làm việc', count: 4 },
-            { id: 'education', label: 'Học vấn', count: 1 },
+            { id: 'all', label: 'All milestones', count: timeline.length },
+            { id: 'work', label: 'Work experience', count: 4 },
+            { id: 'education', label: 'Education', count: 1 },
+            { id: 'award', label: 'Honors & Awards', count: 1 },
           ].map((tab) => {
             const isActive = filter === tab.id;
             return (
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setFilter(tab.id as 'all' | 'work' | 'education')}
+                onClick={() => setFilter(tab.id as 'all' | 'work' | 'education' | 'award')}
+                aria-pressed={isActive}
                 className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer ${
                   isActive
                     ? 'border border-primary/40 bg-primary/15 text-primary shadow-[0_0_15px_rgba(79,142,247,0.25)]'
                     : 'border border-border/60 bg-[#090b14]/70 text-text-secondary hover:border-border hover:text-text'
                 }`}
               >
-                <span>{tab.label}</span>
+                <span>{t(tab.label)}</span>
                 <span
                   className={`rounded-full px-1.5 py-0.5 text-[10px] ${
                     isActive ? 'bg-primary text-bg-primary font-bold' : 'bg-white/10 text-text-muted'
@@ -198,7 +138,7 @@ export default function TimelineSection() {
                     {/* Content Card Side */}
                     <div className="ml-12 md:ml-0 md:w-[calc(50%-2.5rem)]">
                       <div
-                        className="group relative rounded-2xl border bg-[#0b0e1c]/90 p-6 transition-all duration-300 hover:scale-[1.01] shadow-lg"
+                        className="group relative rounded-2xl border bg-[#0b0e1c]/90 p-6 transition-all duration-300 shadow-lg"
                         style={{
                           borderColor: `${item.color}45`,
                           backgroundImage: `linear-gradient(135deg, ${item.color}0D 0%, transparent 70%)`,
@@ -207,13 +147,13 @@ export default function TimelineSection() {
                         {/* Header Badge */}
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
                           <div className="flex items-center gap-2">
-                            {item.category === 'education' ? (
+                            {item.category === 'award' ? (<Trophy className="size-4" style={{ color: item.color }} aria-hidden="true" />) : item.category === 'education' ? (
                               <GraduationCap className="size-4" style={{ color: item.color }} />
                             ) : (
                               <Building2 className="size-4" style={{ color: item.color }} />
                             )}
                             <span className="font-display text-base font-extrabold tracking-tight text-text">
-                              {item.company}
+                              {t(item.company)}
                             </span>
                           </div>
 
@@ -225,14 +165,14 @@ export default function TimelineSection() {
                               backgroundColor: `${item.color}15`,
                             }}
                           >
-                            {item.year}
+                            {t(item.year)}
                           </span>
                         </div>
 
                         {/* Role Title */}
                         <div className="mt-3 flex items-center gap-2">
                           <Briefcase className="size-3.5 text-text-muted" />
-                          <h3 className="font-display text-sm font-semibold text-text">{item.role}</h3>
+                          <h3 className="font-display text-sm font-semibold text-text">{t(item.role)}</h3>
                         </div>
 
                         {/* Bullet Highlights */}
@@ -243,19 +183,19 @@ export default function TimelineSection() {
                                 className="mt-0.5 size-3.5 shrink-0"
                                 style={{ color: item.color }}
                               />
-                              <span>{point}</span>
+                              <span>{t(point)}</span>
                             </li>
                           ))}
                         </ul>
 
                         {/* Tech Stack Tags */}
-                        <div className="mt-4 flex flex-wrap gap-1.5 pt-2 border-t border-white/5">
-                          {item.tech.map((t) => (
+                        <div className={item.tech.length ? "mt-4 flex flex-wrap gap-1.5 pt-2 border-t border-white/5" : "hidden"}>
+                          {item.tech.map((tech) => (
                             <span
-                              key={t}
+                              key={tech}
                               className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 font-code text-[10px] font-medium text-text-secondary group-hover:border-white/20 transition-colors"
                             >
-                              {t}
+                              {t(tech)}
                             </span>
                           ))}
                         </div>

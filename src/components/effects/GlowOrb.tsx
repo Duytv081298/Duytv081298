@@ -1,5 +1,7 @@
 'use client';
 
+import { useReducedMotion } from '@/lib/useReducedMotion';
+
 import { motion } from 'motion/react';
 
 interface GlowOrbProps {
@@ -17,6 +19,7 @@ export default function GlowOrb({
   left = '60%',
   delay = 0,
 }: GlowOrbProps) {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       className="absolute rounded-full pointer-events-none"
@@ -28,7 +31,8 @@ export default function GlowOrb({
         background: `radial-gradient(circle, ${color}15, ${color}05, transparent 70%)`,
         filter: 'blur(60px)',
       }}
-      animate={{
+      aria-hidden="true"
+      animate={reduceMotion ? { opacity: 0.4 } : {
         scale: [1, 1.2, 1],
         opacity: [0.3, 0.6, 0.3],
         x: [0, 30, -20, 0],

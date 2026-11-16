@@ -1,9 +1,13 @@
 'use client';
 
+import { useReducedMotion } from '@/lib/useReducedMotion';
+
+import { useLocale } from '@/components/i18n/LocaleProvider';
+import { profile } from '@/data/profile';
 import { useState } from 'react';
 import { Download, Gamepad2, Mail, MapPin, Send } from 'lucide-react';
-import { motion, useReducedMotion } from 'motion/react';
-import { FacebookIcon, GithubIcon } from '@/components/ui/BrandIcons';
+import { motion } from 'motion/react';
+import { FacebookIcon, GithubIcon, LinkedinIcon } from '@/components/ui/BrandIcons';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import SectionHeader from '@/components/ui/SectionHeader';
 import CVModal from '@/components/ui/CVModal';
@@ -14,6 +18,7 @@ const contactDetails = [
 ];
 
 export default function ContactSection() {
+  const { t } = useLocale();
   const reduceMotion = useReducedMotion();
   const [isCVModalOpen, setIsCVModalOpen] = useState(false);
 
@@ -26,7 +31,7 @@ export default function ContactSection() {
           <SectionHeader
             id="contact"
             accent="contact"
-            title="Let's build something great together!"
+            title={t("Let's build something great together!")}
             className="mb-0"
           />
         </RevealOnScroll>
@@ -54,9 +59,9 @@ export default function ContactSection() {
             </div>
 
             <div className="flex flex-col justify-center border-b border-border/60 p-7 md:border-r md:border-b-0 md:px-9">
-              <h3 className="font-display text-lg font-bold text-text">Get in touch</h3>
-              <p className="mt-1 text-[11px] leading-5 text-text-secondary">
-                I&apos;m open for full-time, contract and freelance opportunities.
+              <h3 className="font-display text-lg font-bold text-text">{t('Get in touch')}</h3>
+              <p className="mt-1 text-sm leading-6 text-text-secondary">
+                {t("I'm open for full-time, contract and freelance opportunities.")}
               </p>
 
               <div className="mt-5 space-y-3">
@@ -66,8 +71,8 @@ export default function ContactSection() {
                       <Icon size={14} aria-hidden="true" />
                     </span>
                     <span>
-                      <span className="block font-code text-[8px] uppercase tracking-[0.12em] text-text-muted">{label}</span>
-                      <span className="block text-[11px] font-medium text-[#B9C6D8]">{value}</span>
+                      <span className="block font-code text-xs uppercase tracking-[0.12em] text-text-muted">{t(label)}</span>
+                      <span className="block text-sm font-medium text-[#B9C6D8]">{label === 'Email' ? <a href={`mailto:${value}`} className="break-all hover:text-primary">{value}</a> : t(value)}</span>
                     </span>
                   </div>
                 ))}
@@ -79,7 +84,7 @@ export default function ContactSection() {
                 href="https://github.com/Duytv081298"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex min-h-10 items-center justify-between rounded-lg border border-border bg-bg-primary/35 px-4 text-[11px] font-semibold text-text-secondary transition-all duration-200 hover:border-primary/45 hover:bg-primary/8 hover:text-text"
+                className="group flex min-h-10 items-center justify-between rounded-lg border border-border bg-bg-primary/35 px-4 text-sm font-semibold text-text-secondary transition-all duration-200 hover:border-primary/45 hover:bg-primary/8 hover:text-text"
               >
                 <span className="flex items-center gap-3">
                   <GithubIcon size={14} className="text-[#8FA4BE] transition-colors group-hover:text-primary" aria-hidden="true" />
@@ -88,11 +93,13 @@ export default function ContactSection() {
                 <Send size={11} className="text-text-muted opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true" />
               </a>
 
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center gap-3 rounded-lg border border-border bg-bg-primary/35 px-4 text-sm font-semibold text-text-secondary transition-colors hover:border-primary/45 hover:text-text"><LinkedinIcon size={16} />LinkedIn</a>
+
               <a
                 href="https://web.facebook.com/Duytv98"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex min-h-10 items-center justify-between rounded-lg border border-border bg-bg-primary/35 px-4 text-[11px] font-semibold text-text-secondary transition-all duration-200 hover:border-primary/45 hover:bg-primary/8 hover:text-text"
+                className="group flex min-h-10 items-center justify-between rounded-lg border border-border bg-bg-primary/35 px-4 text-sm font-semibold text-text-secondary transition-all duration-200 hover:border-primary/45 hover:bg-primary/8 hover:text-text"
               >
                 <span className="flex items-center gap-3">
                   <FacebookIcon size={14} className="text-[#8FA4BE] transition-colors group-hover:text-primary" aria-hidden="true" />
@@ -104,11 +111,11 @@ export default function ContactSection() {
               <button
                 type="button"
                 onClick={() => setIsCVModalOpen(true)}
-                className="group flex min-h-10 cursor-pointer items-center justify-between rounded-lg border border-border bg-bg-primary/35 px-4 text-[11px] font-semibold text-text-secondary transition-all duration-200 hover:border-primary/45 hover:bg-primary/8 hover:text-text"
+                className="group flex min-h-10 cursor-pointer items-center justify-between rounded-lg border border-border bg-bg-primary/35 px-4 text-sm font-semibold text-text-secondary transition-all duration-200 hover:border-primary/45 hover:bg-primary/8 hover:text-text"
               >
                 <span className="flex items-center gap-3">
                   <Download size={14} className="text-[#8FA4BE] transition-colors group-hover:text-primary" aria-hidden="true" />
-                  Download CV
+                  {t('cv')}
                 </span>
                 <Send size={11} className="text-text-muted opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true" />
               </button>
