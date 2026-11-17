@@ -1,49 +1,38 @@
-<svg width="460" height="240" xmlns="http://www.w3.org/2000/svg">
-  <!-- No background — blends with parent card -->
-
-  <!-- Header row -->
-  <line x1="0" y1="18" x2="460" y2="18" stroke="#30363d" stroke-width="0.5"/>
-  <text x="0" y="14" font-family="'Segoe UI',sans-serif" font-size="11" fill="#8b949e" font-weight="600">Attribute</text>
-  <text x="460" y="14" font-family="'Segoe UI',sans-serif" font-size="11" fill="#8b949e" font-weight="600" text-anchor="end">Level / Mastery</text>
-
-  <!-- Row 1: Cocos Creator 95% -->
-  <text x="0" y="42" font-family="'Segoe UI',sans-serif" font-size="12.5" font-weight="600" fill="#e6edf3">Main Engine (Cocos Creator)</text>
-  <rect x="240" y="31" width="150" height="12" rx="6" fill="#21262d"/>
-  <rect x="240" y="31" width="142" height="12" rx="6" fill="#3B82F6"/>
-  <text x="460" y="42" font-family="'Segoe UI',sans-serif" font-size="11.5" fill="#94a3b8" text-anchor="end">🖼 95%</text>
-  <line x1="0" y1="52" x2="460" y2="52" stroke="#21262d" stroke-width="0.5"/>
-
-  <!-- Row 2: Unity 85% -->
-  <text x="0" y="76" font-family="'Segoe UI',sans-serif" font-size="12.5" font-weight="600" fill="#e6edf3">Cross Engine (Unity)</text>
-  <rect x="240" y="65" width="150" height="12" rx="6" fill="#21262d"/>
-  <rect x="240" y="65" width="127" height="12" rx="6" fill="#4ADE80"/>
-  <text x="460" y="76" font-family="'Segoe UI',sans-serif" font-size="11.5" fill="#94a3b8" text-anchor="end">⚙ 85%</text>
-  <line x1="0" y1="86" x2="460" y2="86" stroke="#21262d" stroke-width="0.5"/>
-
-  <!-- Row 3: TypeScript Expert -->
-  <text x="0" y="110" font-family="'Segoe UI',sans-serif" font-size="12.5" font-weight="600" fill="#e6edf3">Logic &amp; Scripting (TypeScript / C# / JS)</text>
-  <rect x="240" y="99" width="150" height="12" rx="6" fill="#21262d"/>
-  <rect x="240" y="99" width="127" height="12" rx="6" fill="#A855F7"/>
-  <text x="460" y="110" font-family="'Segoe UI',sans-serif" font-size="11.5" fill="#A855F7" text-anchor="end" font-weight="700">Expert</text>
-  <line x1="0" y1="120" x2="460" y2="120" stroke="#21262d" stroke-width="0.5"/>
-
-  <!-- Row 4: WebGL Proficient -->
-  <text x="0" y="144" font-family="'Segoe UI',sans-serif" font-size="12.5" font-weight="600" fill="#e6edf3">Graphics API (WebGL)</text>
-  <rect x="240" y="133" width="150" height="12" rx="6" fill="#21262d"/>
-  <rect x="240" y="133" width="105" height="12" rx="6" fill="#EF4444"/>
-  <text x="460" y="144" font-family="'Segoe UI',sans-serif" font-size="11.5" fill="#EF4444" text-anchor="end" font-weight="700">Proficient</text>
-  <line x1="0" y1="154" x2="460" y2="154" stroke="#21262d" stroke-width="0.5"/>
-
-  <!-- Row 5: Backend Intermediate -->
-  <text x="0" y="178" font-family="'Segoe UI',sans-serif" font-size="12.5" font-weight="600" fill="#e6edf3">Backend &amp; Tools (NodeJS / Webpack)</text>
-  <rect x="240" y="167" width="150" height="12" rx="6" fill="#21262d"/>
-  <rect x="240" y="167" width="90" height="12" rx="6" fill="#EAB308"/>
-  <text x="460" y="178" font-family="'Segoe UI',sans-serif" font-size="11.5" fill="#EAB308" text-anchor="end" font-weight="700">Intermediate</text>
-  <line x1="0" y1="188" x2="460" y2="188" stroke="#21262d" stroke-width="0.5"/>
-
-  <!-- Row 6: Firebase Proficient -->
-  <text x="0" y="212" font-family="'Segoe UI',sans-serif" font-size="12.5" font-weight="600" fill="#e6edf3">Database &amp; Services (Firebase)</text>
-  <rect x="240" y="201" width="150" height="12" rx="6" fill="#21262d"/>
-  <rect x="240" y="201" width="75" height="12" rx="6" fill="#F97316"/>
-  <text x="460" y="212" font-family="'Segoe UI',sans-serif" font-size="11.5" fill="#F97316" text-anchor="end" font-weight="700">Proficient</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="264" viewBox="0 0 640 264" role="img" aria-labelledby="title desc">
+<title id="title">Game development skills</title>
+<desc id="desc">Cocos Creator 95%, Unity 85%, scripting Expert, WebGL Proficient, backend and tools Intermediate, Firebase Proficient.</desc>
+<g font-family="Segoe UI, Arial, sans-serif">
+<text x="0" y="16" fill="#59636e" font-size="14" font-weight="600">Attribute</text>
+<text x="638" y="16" fill="#59636e" font-size="14" font-weight="600" text-anchor="end">Level / Mastery</text>
+<path d="M0 25H640" stroke="#d1d9e0"/>
+<text x="0" y="49" fill="#1f2328" font-size="15" font-weight="600">Main Engine (Cocos Creator)</text>
+<rect x="310" y="38" width="180" height="12" rx="6" fill="#eaeef2"/>
+<rect x="310" y="38" width="171" height="12" rx="6" fill="#2563eb"/>
+<text x="638" y="49" fill="#2563eb" font-size="14" font-weight="600" text-anchor="end">95%</text>
+<path d="M0 63H640" stroke="#d1d9e0" stroke-width="0.5"/>
+<text x="0" y="89" fill="#1f2328" font-size="15" font-weight="600">Cross Engine (Unity)</text>
+<rect x="310" y="78" width="180" height="12" rx="6" fill="#eaeef2"/>
+<rect x="310" y="78" width="153" height="12" rx="6" fill="#15803d"/>
+<text x="638" y="89" fill="#15803d" font-size="14" font-weight="600" text-anchor="end">85%</text>
+<path d="M0 103H640" stroke="#d1d9e0" stroke-width="0.5"/>
+<text x="0" y="129" fill="#1f2328" font-size="15" font-weight="600">Logic &amp; Scripting (TypeScript / C# / JS)</text>
+<rect x="310" y="118" width="180" height="12" rx="6" fill="#eaeef2"/>
+<rect x="310" y="118" width="153" height="12" rx="6" fill="#7e22ce"/>
+<text x="638" y="129" fill="#7e22ce" font-size="14" font-weight="600" text-anchor="end">Expert</text>
+<path d="M0 143H640" stroke="#d1d9e0" stroke-width="0.5"/>
+<text x="0" y="169" fill="#1f2328" font-size="15" font-weight="600">Graphics API (WebGL)</text>
+<rect x="310" y="158" width="180" height="12" rx="6" fill="#eaeef2"/>
+<rect x="310" y="158" width="126" height="12" rx="6" fill="#b91c1c"/>
+<text x="638" y="169" fill="#b91c1c" font-size="14" font-weight="600" text-anchor="end">Proficient</text>
+<path d="M0 183H640" stroke="#d1d9e0" stroke-width="0.5"/>
+<text x="0" y="209" fill="#1f2328" font-size="15" font-weight="600">Backend &amp; Tools (NodeJS / Webpack)</text>
+<rect x="310" y="198" width="180" height="12" rx="6" fill="#eaeef2"/>
+<rect x="310" y="198" width="108" height="12" rx="6" fill="#854d0e"/>
+<text x="638" y="209" fill="#854d0e" font-size="14" font-weight="600" text-anchor="end">Intermediate</text>
+<path d="M0 223H640" stroke="#d1d9e0" stroke-width="0.5"/>
+<text x="0" y="249" fill="#1f2328" font-size="15" font-weight="600">Database &amp; Services (Firebase)</text>
+<rect x="310" y="238" width="180" height="12" rx="6" fill="#eaeef2"/>
+<rect x="310" y="238" width="90" height="12" rx="6" fill="#c2410c"/>
+<text x="638" y="249" fill="#c2410c" font-size="14" font-weight="600" text-anchor="end">Proficient</text>
+</g>
 </svg>
