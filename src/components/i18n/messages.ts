@@ -1,6 +1,7 @@
 // English source copy with Vietnamese and Simplified Chinese translations.
 // Product names and technology names intentionally retain their original spelling.
 export const messages: Record<string, readonly [string, string]> = {
+  "Play demo": ["Chơi demo", "试玩演示"],
   "{count} playable demos. Choose a game to play in your browser.": ["{count} demo chơi thử. Chọn game để chơi ngay trên trình duyệt.", "{count} 个试玩演示。选择游戏即可在浏览器中体验。"],
   "About Me": ["Giới thiệu", "关于我"],
   "Core engines": ["Engine chính", "主要引擎"],
