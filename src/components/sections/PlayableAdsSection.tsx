@@ -192,9 +192,9 @@ export default function PlayableAdsSection() {
         <div className="mb-5 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
           <SectionHeader
             id="playable"
-            index="01"
+            index="02"
             title={t('Playable Ads')}
-            subtitle={t('{count} playable demos. Choose a game to play in your browser.', { count: playableAds.length })}
+            subtitle={t('{count} playable demos, all independently developed by me. Choose a game to play in your browser.', { count: playableAds.length })}
             className="mb-0 min-w-0 flex-1 lg:max-w-xl"
           />
 

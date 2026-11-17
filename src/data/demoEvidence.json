@@ -1,4 +1,22 @@
 {
+  "arrow": {
+    "publicPath": "/playable/arrow/index.html",
+    "bytes": 3660930,
+    "sha256": "c2e87cc9221300a3bbac22fb7bfe6de45efd5dbf15378866ba006fdc7638da74",
+    "title": "Cocos Creator | PA125_Knit_Away_Duy_210426"
+  },
+  "screw-town": {
+    "publicPath": "/playable/screw-town/index.html",
+    "bytes": 3884164,
+    "sha256": "65dbb07bdb4ad3106ac8461fb4b5c6cdea92ea5555d91b497c2357c0660289de",
+    "title": "Cocos Creator | ScrewJam3D_1"
+  },
+  "car-blast": {
+    "publicPath": "/playable/car-blast/index.html",
+    "bytes": 4214964,
+    "sha256": "466f7a2146dfbc1e6a53833471b0168e2bc5f98517edb86d913134c9fcc4d7f1",
+    "title": "Cocos Creator | CarBlast_Duy_V16_SoundBG_010426"
+  },
   "bloom-sort": {
     "publicPath": "/playable/bloom-sort/index.html",
     "bytes": 5114189,

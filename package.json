@@ -11,6 +11,7 @@
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "evidence:update": "node scripts/audit-demo-evidence.mjs",
+    "evidence:3d:update": "node scripts/audit-3d-demos.mjs",
     "evidence:check": "node scripts/audit-demo-evidence.mjs --check"
   },
   "dependencies": {
@@ -21,7 +22,7 @@
     "lenis": "^1.3.25",
     "lucide-react": "^1.24.0",
     "motion": "^12.42.2",
-    "next": "16.2.10",
+    "next": "16.4.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "three": "^0.185.1"
@@ -35,7 +36,7 @@
     "@types/react-dom": "^19",
     "@types/three": "^0.185.1",
     "eslint": "^9",
-    "eslint-config-next": "16.2.10",
+    "eslint-config-next": "16.4.6",
     "lighthouse": "^13.6.0",
     "tailwindcss": "^4",
     "typescript": "^5"

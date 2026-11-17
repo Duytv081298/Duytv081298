@@ -5,6 +5,8 @@ import { messages } from '../src/components/i18n/messages';
 import { games } from '../src/data/games';
 import { caseStudies, caseStudySlugs } from '../src/data/caseStudies';
 import demoEvidence from '../src/data/demoEvidence.json';
+import technicalEvidence from '../src/data/technicalDemoEvidence.json';
+import { technicalReviews } from '../src/data/technicalReviews';
 import { localizeGame } from '../src/components/i18n/game-copy';
 
 const basePath = process.env.TEST_BASE_PATH || '';
@@ -276,6 +278,16 @@ for (const slug of caseStudySlugs) {
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
         await expect(page.locator('#evidence-heading')).toBeVisible();
         await expect(page.locator('#tradeoffs-heading')).toBeVisible();
+        await expect(page.locator('#implementation-heading')).toBeVisible();
+        await expect(page.locator('#decisions-heading')).toBeVisible();
+        const translated = (text: string) => locale === 'en' ? text : messages[text][locale === 'vi' ? 0 : 1];
+        await expect(page.locator('main')).toContainText(translated(caseStudies[slug].implementation));
+        await expect(page.locator('main')).toContainText(translated(caseStudies[slug].value));
+        for (const decision of caseStudies[slug].decisions) {
+          await expect(page.getByRole('heading', { name: translated(decision.title), exact: true })).toBeVisible();
+        }
+        const disclosure = page.getByTestId('technical-evidence');
+        if (!(await disclosure.evaluate(node => (node as HTMLDetailsElement).open))) await disclosure.locator('summary').click();
         await expect(page.locator('a[href*="/playable/"]')).toHaveAttribute('href', at(evidence.publicPath));
         await expect(page.getByText(evidence.sha256, { exact: true })).toBeVisible();
         const audit = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
@@ -286,11 +298,54 @@ for (const slug of caseStudySlugs) {
 }
 
 test('all design-review copy and CV-backed About content is translated', () => {
-  for (const study of Object.values(caseStudies)) for (const key of [study.tradeoff, ...study.validation]) {
+  for (const study of Object.values(caseStudies)) for (const key of [study.focus, study.context, study.implementation, study.value, study.architecture, study.tradeoff, study.nextStep, ...study.decisions.flatMap(decision => [decision.title, decision.body]), ...study.proof.map(item => item.label)]) {
+    expect(messages[key], key).toHaveLength(2);
+  }
+  for (const review of technicalReviews) for (const key of [review.focus, review.implementation, review.value, review.observation, review.recommendation]) {
     expect(messages[key], key).toHaveLength(2);
   }
   for (const key of ['About Me', 'Client architecture', 'Production automation', 'Cross-platform delivery', 'Core engines']) expect(messages[key], key).toHaveLength(2);
 });
+
+for (const review of technicalReviews) {
+  test(`3D technical evidence for ${review.slug} is inspectable and localized`, async ({ page, request }) => {
+    const { createHash } = await import('node:crypto');
+    const evidence = technicalEvidence[review.slug];
+    const demo = await request.get(at(evidence.publicPath));
+    expect(demo.ok()).toBe(true);
+    const bytes = await demo.body();
+    expect(bytes.byteLength).toBe(evidence.bytes);
+    expect(createHash('sha256').update(bytes).digest('hex')).toBe(evidence.sha256);
+    const manifest = await request.get(at('/evidence/3d-demo-audit.json'));
+    expect(manifest.ok()).toBe(true);
+    expect((await manifest.json())[review.slug]).toEqual(evidence);
+    const screenshot = await request.get(at(`/images/technical-reviews/${review.slug}.png`));
+    expect(screenshot.ok()).toBe(true);
+    expect((await screenshot.body()).subarray(1, 4).toString()).toBe('PNG');
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(at('/'));
+    const card = page.getByRole('article', { name: review.title, exact: true });
+    await expect(card.locator('details')).not.toHaveAttribute('open');
+    await expect(card.getByText(review.implementation, { exact: true })).toBeVisible();
+    await expect(card.getByText(review.value, { exact: true })).toBeVisible();
+    await card.locator('summary').click();
+    for (const width of [320, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const locale of ['en', 'vi', 'zh']) {
+        await page.getByRole('combobox').selectOption(locale);
+        const translated = (text: string) => locale === 'en' ? text : messages[text][locale === 'vi' ? 0 : 1];
+        await expect(card).toContainText(translated(review.recommendation));
+        await expect(card).toContainText(translated(review.observation));
+        await expect(card).toContainText(translated(review.implementation));
+        await expect(card).toContainText(translated(review.value));
+        await expect(card.locator('a[href*="/playable/"]')).toHaveAttribute('href', at(evidence.publicPath));
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+        const audit = await new AxeBuilder({ page }).include(`article[aria-labelledby="review-${review.slug}"]`).analyze();
+        expect(audit.violations).toEqual([]);
+      }
+    }
+  });
+}
 
 test('Hero, About, featured navigation and SEO are present in prerendered HTML', async ({ browser, request }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
@@ -301,6 +356,8 @@ test('Hero, About, featured navigation and SEO are present in prerendered HTML',
   await expect(page.locator('#about')).toContainText('Employee of the Year 2024');
   await expect(page.locator('#about a[href$=".pdf"]')).toHaveCount(2);
   await expect(page.locator('#games a[href*="/games/"]')).toHaveCount(3);
+  for (const slug of caseStudySlugs) await expect(page.locator(`#games a[href*="/games/${slug}"]`)).toBeVisible();
+  expect(await page.evaluate(() => Boolean(document.querySelector('#games')!.compareDocumentPosition(document.querySelector('#playable-ads-grid')!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://duytv081298.github.io/Duytv081298/');
   const person = JSON.parse(await page.locator('script[type="application/ld+json"]').innerText());
   expect(person.jobTitle).toBe('Senior Game Developer');

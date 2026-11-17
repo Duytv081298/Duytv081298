@@ -3,6 +3,7 @@
 import { useReducedMotion } from '@/lib/useReducedMotion';
 
 import GameArtwork from '@/components/game/GameArtwork';
+import Link from 'next/link';
 import { profile } from '@/data/profile';
 import { useState } from 'react';
 import { useLocale } from '@/components/i18n/LocaleProvider';
@@ -94,6 +95,9 @@ export default function HeroSection() {
               <p className="mt-4 max-w-[570px] text-sm leading-7 text-text-secondary">
                 {t(profile.intro)}
               </p>
+              <p className="mt-4 max-w-[570px] border-l-2 border-accent/60 pl-3 text-sm font-medium leading-6 text-text">
+                {t('I independently developed all {count} playable demos featured here.', { count: playableAds.length })}
+              </p>
             </motion.div>
 
             <motion.div
@@ -122,6 +126,7 @@ export default function HeroSection() {
               transition={{ duration: 0.5, delay: 0.24 }}
               className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
             >
+              <Link href="#games" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg border border-primary/50 bg-primary/10 px-5 text-sm font-semibold text-primary hover:bg-primary/20">{t('Explore engineering work')}</Link>
               <MagneticButton variant="primary" size="md" onClick={() => openGame('arrow')} className="min-h-12 min-w-[245px] text-sm font-semibold">
                 <Play size={15} fill="currentColor" aria-hidden="true" />
                 {t('play')}

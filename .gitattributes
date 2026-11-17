@@ -1,0 +1,5 @@
+# Keep demo artifacts byte-identical across platforms for evidence size/hash checks.
+public/playable/**/*.html text eol=lf
+src/data/demoEvidence.json text eol=lf
+src/data/technicalDemoEvidence.json text eol=lf
+public/evidence/*.json text eol=lf

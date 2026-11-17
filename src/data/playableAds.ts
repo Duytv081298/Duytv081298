@@ -1,6 +1,7 @@
 import storeLinks from './storeLinks.json';
 import buildsCatalog from './buildsCatalog.json';
 import gameIcons from './gameIcons.json';
+import { games } from './games';
 
 export interface DemoBuild {
   name: string;
@@ -169,10 +170,14 @@ const typedStoreLinks = storeLinks as Record<string, { googlePlay?: string; appS
 const typedBuildsCatalog = buildsCatalog as Record<string, Array<{ name: string; filename: string; publicPath: string }>>;
 
 export const playableAds: PlayableAd[] = rawPlayableAds.map((ad) => {
+  const reviewedGame = games.find(game => game.slug === ad.slug || (ad.slug === 'fall-guy' && game.slug === 'fall-guy-legend'));
   const links = typedStoreLinks[ad.slug];
   const builds = typedBuildsCatalog[ad.slug] || [];
   return {
     ...ad,
+    description: reviewedGame?.description ?? ad.description,
+    engine: reviewedGame?.engine ?? ad.engine,
+    contributions: ad.slug === 'fall-guy' ? ['Playable Ads Development'] : ad.slug === 'arrow' ? ['Custom rendering', 'Gameplay Mechanics', 'UI/UX Programming'] : ad.slug === 'coffee-please' ? ['Gameplay Mechanics', 'UI/UX Programming'] : ad.contributions,
     googlePlay: (links?.googlePlay ?? ad.googlePlay ?? '').startsWith('https://play.google.com/')
       ? (links?.googlePlay ?? ad.googlePlay ?? '') : '',
     appStore: (links?.appStore ?? ad.appStore ?? '').startsWith('https://apps.apple.com/')

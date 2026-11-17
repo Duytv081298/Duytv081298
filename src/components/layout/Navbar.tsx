@@ -10,8 +10,8 @@ import Modal from '@/components/ui/Modal';
 const navItems = [
   { label: 'home', href: '#hero' },
   { label: 'About Me', href: '#about' },
+  { label: 'Case studies', href: '#games' },
   { label: 'playable', href: '#playable' },
-  { label: 'games', href: '#games' },
   { label: 'tech', href: '#tech' },
   { label: 'journey', href: '#career' },
   { label: 'contact', href: '#contact' },

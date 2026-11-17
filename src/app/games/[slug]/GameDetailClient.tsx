@@ -1,251 +1,84 @@
 'use client';
 
-import { motion } from 'motion/react';
-import { useReducedMotion } from '@/lib/useReducedMotion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale } from '@/components/i18n/LocaleProvider';
 import { localizeGame } from '@/components/i18n/game-copy';
 import { LanguageSelect } from '@/components/layout/Navbar';
-import { ArrowLeft, Cpu, Target, Lightbulb, Wrench } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { type Game } from '@/data/games';
 import { caseStudies } from '@/data/caseStudies';
 import demoEvidence from '@/data/demoEvidence.json';
-import { PlatformBadge } from '@/components/ui/Badge';
-import RevealOnScroll from '@/components/ui/RevealOnScroll';
-import GridBackground from '@/components/effects/GridBackground';
-import MouseSpotlight from '@/components/effects/MouseSpotlight';
+import technicalEvidence from '@/data/technicalDemoEvidence.json';
 
-interface GameDetailClientProps {
-  game: Game;
-}
-
-export default function GameDetailClient({ game: source }: GameDetailClientProps) {
+export default function GameDetailClient({ game: source }: { game: Game }) {
   const { locale, t } = useLocale();
   const game = localizeGame(source, locale);
   const study = caseStudies[game.slug];
   const evidence = demoEvidence[game.slug as keyof typeof demoEvidence];
+  const technical = technicalEvidence[game.slug as keyof typeof technicalEvidence];
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-  const reduceMotion = useReducedMotion();
-  return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen bg-bg-primary text-text">
-      <GridBackground />
-      <MouseSpotlight />
-
-      {/* Header / Hero */}
-      <div className="relative overflow-hidden">
-        {/* Banner Gradient */}
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            background: `linear-gradient(135deg, ${game.coverColor}, ${game.coverColorSecondary}, transparent)`,
-          }}
-        />
-
-        <div className="section-container relative z-10 pt-8 pb-16">
-          <div className="mb-6 flex justify-end"><LanguageSelect /></div>
-          {/* Back Button */}
-          <motion.div
-            initial={reduceMotion ? false : { opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <Link
-              href="/#games"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-text-secondary hover:text-text hover:bg-card border border-border/50 hover:border-border transition-all duration-200 text-sm mb-8"
-            >
-              <ArrowLeft size={16} />
-              {t('Back to Portfolio')}
-            </Link>
-          </motion.div>
-
-          {/* Game Info */}
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
-            {/* Cover */}
-            <motion.div
-              className="w-full lg:w-96 aspect-[16/10] rounded-2xl overflow-hidden shrink-0 shadow-2xl"
-              initial={reduceMotion ? false : { opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <div
-                className="w-full h-full flex items-center justify-center"
-                style={{
-                  background: `linear-gradient(135deg, ${game.coverColor}, ${game.coverColorSecondary})`,
-                }}
-              >
-                <span className="px-5 text-center text-white font-display font-bold text-2xl drop-shadow-lg">
-                  {game.title}
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Details */}
-            <motion.div
-              className="min-w-0 flex-1"
-              initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <div className="flex flex-wrap items-center gap-3 mb-2">
-                <span className="px-2.5 py-1 rounded-md bg-primary/10 text-primary text-xs font-code border border-primary/20">
-                  {t(game.genre)}
-                </span>
-                <span className="px-2.5 py-1 rounded-md bg-card text-text-secondary text-xs font-code border border-border">
-                  {game.engine}
-                </span>
-              </div>
-
-              <h1 className="text-4xl md:text-5xl font-display font-bold text-text mb-2">
-                {game.title}
-              </h1>
-              <p className="text-text-secondary text-lg mb-6">{game.subtitle}</p>
-
-              {/* Platforms */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {[...new Set(game.platforms)].map((platform) => (
-                  <PlatformBadge key={platform} platform={platform} />
-                ))}
-              </div>
-
-              {/* Description */}
-              <p className="text-text-secondary leading-relaxed">{game.description}</p>
-            </motion.div>
-          </div>
-        </div>
+  return <main id="main-content" tabIndex={-1} className="min-h-screen bg-bg-primary text-text">
+    <div className="section-container py-8">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <Link href="/#games" className="inline-flex min-h-11 items-center gap-2 text-sm text-primary"><ArrowLeft size={16} aria-hidden="true" />{t('Back to Portfolio')}</Link>
+        <LanguageSelect />
       </div>
-
-      {/* Neon Divider */}
-      <div className="neon-line" />
-
-      <div className="section-container pt-8"><p role="note" className="rounded-xl border border-border bg-card p-5 text-sm leading-relaxed text-text-secondary">{t('The playable can be inspected directly. The architecture and validation steps below are design analysis; original source code and device benchmark reports are not available here.')}</p></div>
-      {/* Content Sections */}
-      <div className="section-container py-16 space-y-20">
-        {/* Architecture */}
-        <RevealOnScroll>
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
-                <Cpu size={20} className="text-primary" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-display font-bold text-text">{t('Architecture')}</h2>
-                <p className="text-text-muted text-xs font-code">{"// system_design"}</p>
-              </div>
-            </div>
-            <div className="bg-card border border-border rounded-xl p-6">
-              <p className="text-text-secondary leading-relaxed">{game.architecture}</p>
-            </div>
-          </div>
-        </RevealOnScroll>
-
-        {/* Challenges & Solutions */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <RevealOnScroll direction="left">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-danger/10 border border-danger/20 flex items-center justify-center">
-                  <Target size={20} className="text-danger" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-display font-bold text-text">{t('Challenges')}</h2>
-                  <p className="text-text-muted text-xs font-code">{"// problems_faced"}</p>
-                </div>
-              </div>
-              <div className="space-y-3">
-                {game.challenges.map((challenge, i) => (
-                  <div
-                    key={i}
-                    className="bg-card border border-border rounded-xl p-4 flex items-start gap-3"
-                  >
-                    <span className="text-danger font-code text-sm font-bold mt-0.5">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <p className="text-text-secondary text-sm leading-relaxed">{challenge}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </RevealOnScroll>
-
-          <RevealOnScroll direction="right">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
-                  <Lightbulb size={20} className="text-accent" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-display font-bold text-text">{t('Solutions')}</h2>
-                  <p className="text-text-muted text-xs font-code">{"// implementation"}</p>
-                </div>
-              </div>
-              <div className="space-y-3">
-                {game.solutions.map((solution, i) => (
-                  <div
-                    key={i}
-                    className="bg-card border border-border rounded-xl p-4 flex items-start gap-3"
-                  >
-                    <span className="text-accent font-code text-sm font-bold mt-0.5">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <p className="text-text-secondary text-sm leading-relaxed">{solution}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </RevealOnScroll>
-        </div>
-
-        {study && <section aria-labelledby="tradeoffs-heading" className="grid gap-8 lg:grid-cols-2">
-          <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
-            <h2 id="tradeoffs-heading" className="text-2xl font-bold">{t('Engineering trade-offs')}</h2>
-            <p className="mt-4 text-sm leading-7 text-text-secondary">{t(study.tradeoff)}</p>
-          </div>
-          <div><h2 className="text-2xl font-bold">{t('Validation plan')}</h2>
-            <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-7 text-text-secondary">{study.validation.map((step) => <li key={step}>{t(step)}</li>)}</ol>
-          </div>
-        </section>}
-        {evidence && <section aria-labelledby="evidence-heading" className="rounded-xl border border-primary/30 bg-card p-5 sm:p-6">
-          <h2 id="evidence-heading" className="text-2xl font-bold">{t('Inspect the playable artifact')}</h2>
-          <p className="mt-3 text-sm leading-7 text-text-secondary">{t('File size is measured from the committed HTML artifact in decimal bytes. It is not a runtime memory, FPS, transfer size or ad-network acceptance benchmark.')}</p>
-          <dl className="mt-5 grid min-w-0 gap-4 sm:grid-cols-2">
-            <div><dt className="text-sm text-text-secondary">{t('HTML file size')}</dt><dd className="mt-1 font-code text-primary">{(evidence.bytes / 1_000_000).toFixed(2)} MB · {evidence.bytes.toLocaleString(locale)} {t('bytes')}</dd></div>
-            <div><dt className="text-sm text-text-secondary">{t('Artifact title')}</dt><dd className="mt-1 break-words text-sm">{evidence.title}</dd></div>
-            <div className="min-w-0 sm:col-span-2"><dt className="text-sm text-text-secondary">SHA-256</dt><dd className="mt-1 break-all font-code text-xs leading-6 text-text-secondary">{evidence.sha256}</dd></div>
+      <header className="grid items-center gap-8 py-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+        {technical ? <Image src={`${basePath}/images/technical-reviews/${game.slug}.png`} alt={t('Captured from the inspected demo: {title}', { title: game.title })} width={440} height={800} className="h-80 w-full rounded-2xl border border-border bg-bg-secondary object-contain lg:h-[440px]" /> : <div className="flex h-60 items-center justify-center rounded-2xl p-6 text-center text-3xl font-bold text-white" style={{ background: `linear-gradient(135deg, ${game.coverColor}, ${game.coverColorSecondary})` }}>{game.title}</div>}
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-primary">{game.engine} · {t('Playable Ads')}</p>
+          <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">{game.title}</h1>
+          <dl className="mt-5 rounded-xl border border-accent/30 bg-card p-4">
+            <dt className="text-xs text-text-secondary">{t('My role')}</dt>
+            <dd className="mt-2 text-sm font-semibold leading-6 text-accent">{t('Sole developer')} · {t('100% of programming')}</dd>
           </dl>
-          <a href={`${basePath}${evidence.publicPath}`} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex min-h-11 items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-bg-primary">{t('Open playable demo')}<span className="sr-only"> — {game.title}</span></a>
-        </section>}
-
-        {/* Tags */}
-        <RevealOnScroll>
-          <div className="flex items-center gap-3 mb-4">
-            <Wrench size={16} className="text-text-muted" />
-            <span className="text-text-muted text-xs font-code uppercase tracking-wider">
-              {t('Technologies')}
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {game.tags.map((tag) => (
-              <span
-                key={t(tag)}
-                className="px-3 py-1.5 rounded-lg bg-card border border-border text-text-secondary text-sm font-code hover:border-primary/30 hover:text-text transition-all duration-200"
-              >
-                {t(tag)}
-              </span>
-            ))}
-          </div>
-        </RevealOnScroll>
-
-        {/* Back Link */}
-        <div className="pt-8 border-t border-border">
-          <Link
-            href="/#games"
-            className="inline-flex items-center gap-2 text-text-secondary hover:text-primary transition-colors duration-200 font-display text-sm"
-          >
-            <ArrowLeft size={16} />
-            {t('Back to Portfolio')}
-          </Link>
+          <p className="mt-3 text-sm leading-7 text-text-secondary">{t('I handled all programming for this project, including the systems and technical decisions described below.')}</p>
+          <p className="mt-4 text-xl font-semibold leading-relaxed">{study ? t(study.focus) : game.subtitle}</p>
+          <p className="mt-4 text-sm leading-7 text-text-secondary">{study ? t(study.context) : game.description}</p>
+          {evidence && <a href={`${basePath}${evidence.publicPath}`} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-lg bg-primary px-5 py-3 font-semibold text-bg-primary">{t('Open playable demo')}<ArrowUpRight size={18} aria-hidden="true" /><span className="sr-only"> — {game.title}</span></a>}
+          {study && <dl className="mt-6 grid grid-cols-2 gap-3">{study.proof.map(item => <div key={item.label} className="min-w-0 rounded-xl border border-border bg-card p-4"><dt className="text-xs leading-5 text-text-secondary">{t(item.label)}</dt><dd className="mt-2 text-xl font-bold text-primary">{t(item.value)}</dd></div>)}</dl>}
         </div>
-      </div>
-    </main>
-  );
+      </header>
+
+      {study && <section aria-labelledby="implementation-heading" className="grid gap-6 border-t border-border py-10 md:grid-cols-2">
+        <div><h2 id="implementation-heading" className="text-2xl font-bold">{t('Implemented solution')}</h2><p className="mt-4 text-sm leading-7 text-text-secondary">{t(study.implementation)}</p></div>
+        <div className="rounded-xl border border-primary/30 bg-card p-5 sm:p-6"><h2 className="text-2xl font-bold">{t('Engineering value')}</h2><p className="mt-4 text-sm leading-7 text-text-secondary">{t(study.value)}</p></div>
+      </section>}
+
+      <section aria-labelledby="architecture-heading" className="border-t border-border py-10">
+        <h2 id="architecture-heading" className="text-2xl font-bold">{t('Architecture')}</h2>
+        <p className="mt-4 max-w-4xl text-sm leading-7 text-text-secondary">{study ? t(study.architecture) : game.architecture}</p>
+      </section>
+
+      {study && <section aria-labelledby="decisions-heading" className="border-t border-border py-10">
+        <h2 id="decisions-heading" className="text-2xl font-bold">{t('Key engineering decisions')}</h2>
+        <div className="mt-6 grid gap-5 lg:grid-cols-3">{study.decisions.map((decision, index) => <article key={decision.title} className="min-w-0 rounded-xl border border-border bg-card p-5 sm:p-6"><span aria-hidden="true" className="font-code text-sm text-primary">0{index + 1}</span><h3 className="mt-3 text-lg font-semibold">{t(decision.title)}</h3><p className="mt-3 text-sm leading-7 text-text-secondary">{t(decision.body)}</p></article>)}</div>
+      </section>}
+
+      {study && <section aria-labelledby="tradeoffs-heading" className="border-t border-border py-10">
+        <h2 id="tradeoffs-heading" className="text-2xl font-bold">{t('Engineering trade-offs')}</h2>
+        <p className="mt-4 max-w-4xl text-sm leading-7 text-text-secondary">{t(study.tradeoff)}</p>
+      </section>}
+
+      {evidence && <details className="my-6 rounded-xl border border-border bg-card p-5 sm:p-6" data-testid="technical-evidence">
+        <summary id="evidence-heading" className="min-h-11 cursor-pointer rounded text-lg font-semibold text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">{t('Technical evidence')}</summary>
+        <div className="mt-5 space-y-6 text-sm leading-7 text-text-secondary">
+          <p>{t('Examples are linked to the packaged demos. Scene counts include inactive objects; device performance requires a separate benchmark.')}</p>
+          {study && <div><h3 className="font-semibold text-text">{t('Inspected component methods')}</h3><ul className="mt-2 space-y-2 font-code text-xs">{Object.entries(study.methods).map(([name, methods]) => <li key={name} className="break-words">{name}: {methods.join(', ')}</li>)}</ul></div>}
+          <dl className="grid min-w-0 gap-4 sm:grid-cols-2">
+            <div><dt>{t('HTML file size')}</dt><dd className="font-code text-primary">{(evidence.bytes / 1_000_000).toFixed(2)} MB · {evidence.bytes.toLocaleString(locale)} {t('bytes')}</dd></div>
+            <div><dt>{t('Artifact title')}</dt><dd className="break-words">{evidence.title}</dd></div>
+            <div className="min-w-0 sm:col-span-2"><dt>SHA-256</dt><dd className="break-all font-code text-xs">{evidence.sha256}</dd></div>
+          </dl>
+          {study && <div><h3 className="font-semibold text-text">{t('Further development')}</h3><p className="mt-2">{t(study.nextStep)}</p></div>}
+        </div>
+      </details>}
+
+      <nav aria-label={t('Explore engineering work')} className="flex flex-wrap gap-4 border-t border-border py-10">
+        <Link href="/#games" className="inline-flex min-h-11 items-center rounded-lg border border-primary/40 px-4 py-2 text-sm font-semibold text-primary">{t('Selected engineering case studies')}</Link>
+        <Link href="/#technical-evidence" className="inline-flex min-h-11 items-center rounded-lg border border-border px-4 py-2 text-sm text-text-secondary">{t('More 3D engineering evidence')}</Link>
+      </nav>
+    </div>
+  </main>;
 }

@@ -6,6 +6,7 @@ import AboutSection from '@/components/sections/AboutSection';
 import HeroSection from '@/components/sections/HeroSection';
 import PlayableAdsSection from '@/components/sections/PlayableAdsSection';
 import FeaturedGamesSection from '@/components/sections/FeaturedGamesSection';
+import TechnicalReviewsSection from '@/components/sections/TechnicalReviewsSection';
 import TechStackSection from '@/components/sections/TechStackSection';
 import PerformanceSection from '@/components/sections/PerformanceSection';
 import TimelineSection from '@/components/sections/TimelineSection';
@@ -31,11 +32,13 @@ export default function Home() {
         <AboutSection />
         
         <RevealOnScroll direction="up" duration={0.85} delay={0.05}>
-          <PlayableAdsSection />
+          <FeaturedGamesSection />
         </RevealOnScroll>
 
+        <TechnicalReviewsSection />
+
         <RevealOnScroll direction="up" duration={0.85} delay={0.05}>
-          <FeaturedGamesSection />
+          <PlayableAdsSection />
         </RevealOnScroll>
 
         <RevealOnScroll direction="up" duration={0.85} delay={0.05}>
