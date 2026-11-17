@@ -34,8 +34,8 @@
       <h2>🎮 Skills</h2>
       <picture>
         <source media="(prefers-color-scheme: dark)" srcset="skills-card-dark.svg" />
-        <source media="(prefers-color-scheme: light)" srcset="skills-card.svg" />
-        <img src="skills-card.svg" width="100%" alt="Skills: Cocos Creator, Unity, scripting, WebGL, backend tools and Firebase" />
+        <source media="(prefers-color-scheme: light)" srcset="skills-card-light.svg" />
+        <img src="skills-card-light.svg" width="100%" alt="Skills: Cocos Creator, Unity, scripting, WebGL, backend tools and Firebase" />
       </picture>
     </td>
   </tr>
