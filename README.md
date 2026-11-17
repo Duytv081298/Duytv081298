@@ -178,17 +178,20 @@ Use Node.js 22.12 or later:
 ```sh
 npm ci
 npm run lint -- --max-warnings=0
-npm run build
+npm run evidence:check
 npm run typecheck
+npm run build
 npx playwright install --with-deps chromium
-npm test
+TEST_STATIC_EXPORT=1 TEST_BASE_PATH=/Duytv081298 npm test
 ```
 
 Playwright covers language detection and fallback, blocked storage, persistence,
 cross-tab synchronization, responsive layouts at 320/375/768/1024/1440px, keyboard
 navigation, CV/player controls, and automated WCAG A/AA checks with axe. Automated
 checks do not replace manual screen-reader testing. GitHub Actions runs these checks
-for pull requests to `main` and saves the report, traces and screenshots as artifacts.
+on the audit branch and for pull requests to `main`, using the production static
+export under `/Duytv081298/`. It saves browser reports, screenshots and mobile
+Lighthouse reports as artifacts.
 This check workflow does not deploy the site. The existing Pages workflow deploys
 only after changes land on `main` (or it is manually triggered).
 
@@ -207,3 +210,16 @@ and CV views read this shared source. Original PDF files live at
 Legacy Vietnamese PDF URLs also serve the updated Vietnamese document. Performance
 cards now reflect the CV's 60 FPS target, 2–5 MB playable budgets, 70% reduction in
 manual deployment time and 6+ years of experience.
+
+
+### Evidence and audit results
+
+Hero and About Me use the shared CV profile in all three languages. Featured
+projects expose design trade-offs and validation plans alongside exact artifact
+byte counts and SHA-256 hashes. Project source code and device benchmarks are not
+supplied, so implementation descriptions are labeled as design analysis and
+unsupported before/after metrics are not published as results.
+
+Run `npm run evidence:update` after deliberately changing a featured demo artifact.
+See [the verification report](docs/portfolio-upgrade-verification.md) for actual
+checks, measured Lighthouse scores, scope and remaining performance opportunities.

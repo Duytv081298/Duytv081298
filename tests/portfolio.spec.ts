@@ -322,3 +322,13 @@ test('Hero, About, featured navigation and SEO are present in prerendered HTML',
     expect((await request.get(at('/robots.txt'))).ok()).toBe(true);
   }
 });
+
+test('visible playable labels match their accessible names in all languages', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(at('/'));
+  for (const locale of ['en', 'vi', 'zh']) {
+    await page.getByRole('combobox').selectOption(locale);
+    const audit = await new AxeBuilder({ page }).withRules(['label-content-name-mismatch']).analyze();
+    expect(audit.violations.map(({ id, nodes }) => ({ id, targets: nodes.map((node) => node.target) }))).toEqual([]);
+  }
+});

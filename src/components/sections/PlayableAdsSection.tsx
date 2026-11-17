@@ -194,7 +194,7 @@ export default function PlayableAdsSection() {
             id="playable"
             index="01"
             title={t('Playable Ads')}
-            subtitle={t('{count} playable ads shipped. Choose a game to play in your browser.', { count: playableAds.length })}
+            subtitle={t('{count} playable demos. Choose a game to play in your browser.', { count: playableAds.length })}
             className="mb-0 min-w-0 flex-1 lg:max-w-xl"
           />
 
@@ -202,13 +202,13 @@ export default function PlayableAdsSection() {
             <div className="grid w-full grid-cols-3 lg:min-w-[390px]" role="group" aria-label={t('Playable ads statistics')}>
               <div className="flex min-w-0 flex-col px-3 sm:px-5 lg:pl-0">
                 <span className="font-code text-lg font-bold leading-none text-primary sm:text-xl">
-                  {playableAds.length}+
+                  {playableAds.length}
                 </span>
                 <span className="mt-1 text-[10px] text-text-secondary sm:text-xs">{t('Total Games')}</span>
               </div>
               <div className="flex min-w-0 flex-col border-l border-border/70 px-3 sm:px-5">
-                <span className="font-code text-lg font-bold leading-none text-accent sm:text-xl">{'<5MB'}</span>
-                <span className="mt-1 text-[10px] text-text-secondary sm:text-xs">{t('Each')}</span>
+                <span className="font-code text-lg font-bold leading-none text-accent sm:text-xl">{'2–5 MB'}</span>
+                <span className="mt-1 text-[10px] text-text-secondary sm:text-xs">{t('Playable size budgets')}</span>
               </div>
               <div className="flex min-w-0 flex-col border-l border-border/70 px-3 sm:px-5 lg:pr-0">
                 <span className="font-code text-lg font-bold leading-none text-purple sm:text-xl">{t('Playable')}</span>
@@ -269,7 +269,7 @@ export default function PlayableAdsSection() {
                     y: -10,
                   } : { scale: 1, y: 0 }}
                   onClick={() => openPlayer(ad)}
-                  aria-label={t('Play {title}', { title: ad.title })}
+                  aria-label={`${t('Play {title}', { title: ad.title })} — ${t(playableCategories.find((category) => category.value === ad.category)?.label ?? ad.category)}`}
                 >
                   {/* Card */}
                   <div
@@ -307,9 +307,7 @@ export default function PlayableAdsSection() {
                             <div className="z-10 transition-transform duration-300 group-hover:scale-110">
                               {getCategorySvg(ad.category)}
                             </div>
-                            <span className="absolute bottom-1 z-10 select-none rounded border border-white/5 bg-black/35 px-1 py-0.5 font-code text-[7px] font-bold uppercase tracking-wider text-white/80 backdrop-blur-[2px]">
-                              {ad.title.slice(0, 3)}
-                            </span>
+
                           </div>
                         )}
 
