@@ -10,7 +10,8 @@ import { motion } from 'motion/react';
 import { FacebookIcon, GithubIcon, LinkedinIcon } from '@/components/ui/BrandIcons';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import SectionHeader from '@/components/ui/SectionHeader';
-import CVModal from '@/components/ui/CVModal';
+import dynamic from 'next/dynamic';
+const CVModal = dynamic(() => import('@/components/ui/CVModal'), { ssr: false });
 
 const contactDetails = [
   { label: 'Email', value: 'duytv0812@gmail.com', Icon: Mail },
@@ -124,7 +125,7 @@ export default function ContactSection() {
         </RevealOnScroll>
       </div>
 
-      <CVModal isOpen={isCVModalOpen} onClose={() => setIsCVModalOpen(false)} />
+      {isCVModalOpen && <CVModal isOpen onClose={() => setIsCVModalOpen(false)} />}
     </section>
   );
 }

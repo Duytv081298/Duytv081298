@@ -1,0 +1,20 @@
+{
+  "bloom-sort": {
+    "publicPath": "/playable/bloom-sort/index.html",
+    "bytes": 5114189,
+    "sha256": "406d529f71a881ca17ca45e16f8e9f510632f7c15e73b84147b15d6d80cb284d",
+    "title": "Cocos Creator | BloomSort_V14_Duy_151225"
+  },
+  "screw-puzzle": {
+    "publicPath": "/playable/screw-puzzle/index.html",
+    "bytes": 2283706,
+    "sha256": "d5a3ee2825b591f91b9c0cac55b74c1f92ed86592e8d442ce42f0d40e505517f",
+    "title": "Cocos Creator | Wood_Nuts_And_Bolts_Puzzle"
+  },
+  "coffee-please": {
+    "publicPath": "/playable/coffee-please/index.html",
+    "bytes": 3830541,
+    "sha256": "c8c95f00952c21412ff09e5db3794f1b1b6797c5aeb8bc242c4a7ae01950444b",
+    "title": "Cocos Creator | CoffePack"
+  }
+}

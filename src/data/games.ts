@@ -1,10 +1,3 @@
-export interface GameOptimization {
-  metric: string;
-  before: string;
-  after: string;
-  unit?: string;
-}
-
 export interface Game {
   id: string;
   slug: string;
@@ -19,7 +12,6 @@ export interface Game {
   architecture: string;
   challenges: string[];
   solutions: string[];
-  optimizations: GameOptimization[];
   tags: string[];
   featured: boolean;
   category: 'mobile' | 'playable' | 'instant' | 'web';
@@ -37,27 +29,10 @@ export const games: Game[] = [
     platforms: ['Mobile', 'Playable Ad', 'AppLovin'],
     coverColor: '#FF6B9D',
     coverColorSecondary: '#C44569',
-    description:
-      'A satisfying flower sorting puzzle game where players arrange blooms by color into matching vases. Features smooth animations, haptic feedback, and progressively challenging levels.',
-    architecture:
-      'MVC architecture with centralized GameManager, event-driven communication between modules. Uses object pooling for flower instances and asset bundles for level packs.',
-    challenges: [
-      'Smooth drag & drop with physics-based settling animation',
-      'Memory spikes when loading 100+ unique flower textures',
-      'Playable Ad version needed to be under 5MB',
-    ],
-    solutions: [
-      'Custom spring physics system with configurable damping and stiffness',
-      'Texture atlas with runtime sprite slicing, reducing 100 textures to 4 atlases',
-      'Asset compression pipeline: PNG → WebP, audio → low-bitrate MP3, code minification',
-    ],
-    optimizations: [
-      { metric: 'Draw Calls', before: '180', after: '14', unit: '' },
-      { metric: 'Memory', before: '145MB', after: '52MB', unit: '' },
-      { metric: 'Bundle Size', before: '8.2MB', after: '2.8MB', unit: '' },
-      { metric: 'Load Time', before: '4.8s', after: '1.6s', unit: '' },
-      { metric: 'FPS', before: '42', after: '60', unit: 'stable' },
-    ],
+    description: "A flower sorting playable: group matching colors and complete the board. This design review focuses on responsive input and reusable visual feedback.",
+    architecture: "Separate board data, touch input and visual feedback. Validate moves before changing the model; emit events for animation and completion. Bound effect pools and release level assets at restart.",
+    challenges: ["Responsive dragging without accepting invalid moves", "Texture residency and allocations across restarts", "Visual variety within a network-specific package budget"],
+    solutions: ["Validate each move before running its animation", "Group compatible sprites and bound reusable effect pools", "Audit embedded textures, audio and code before selecting compression"],
     tags: ['Puzzle', 'Sorting', 'Casual', 'Cocos Creator'],
     featured: true,
     category: 'mobile',
@@ -72,27 +47,10 @@ export const games: Game[] = [
     platforms: ['Mobile', 'Playable Ad', 'AppLovin', 'Google Play'],
     coverColor: '#4DA3FF',
     coverColorSecondary: '#2E86DE',
-    description:
-      'An engaging puzzle game where players unscrew bolts and organize them by color. Features realistic rotation physics, progressive difficulty, and rewarding completion animations.',
-    architecture:
-      'Component-based architecture with reusable Screw, Bolt, and Board components. Physics simulation handled by custom 2D rotation system optimized for mobile touch input.',
-    challenges: [
-      'Realistic screw rotation feel on touch devices',
-      'Complex board layouts with overlapping screw paths',
-      'Performance drops with 20+ animated screws on low-end devices',
-    ],
-    solutions: [
-      'Custom touch-to-rotation mapping with momentum and friction',
-      'Spatial partitioning for collision detection between screw paths',
-      'LOD system: simplify animations for off-screen or distant screws',
-    ],
-    optimizations: [
-      { metric: 'Draw Calls', before: '220', after: '18', unit: '' },
-      { metric: 'Memory', before: '160MB', after: '58MB', unit: '' },
-      { metric: 'Bundle Size', before: '7.5MB', after: '2.9MB', unit: '' },
-      { metric: 'Load Time', before: '5.0s', after: '1.8s', unit: '' },
-      { metric: 'FPS', before: '35', after: '60', unit: 'stable' },
-    ],
+    description: "A screw-and-board playable. Remove boards by moving screws into valid empty holes. This review focuses on move validation and synchronized visual feedback.",
+    architecture: "Represent holes, screws and board dependencies as data. Update the board model atomically after validation; animate the result in a separate view layer. Keep restart and completion states explicit.",
+    challenges: ["Rapid repeated touches applying a move twice", "Blocked holes and overlapping board dependencies", "Animation and logical state diverging after interruption"],
+    solutions: ["Lock the active move until its state update is committed", "Validate occupancy and dependencies before animation", "Reset the logical and visual layers together"],
     tags: ['Puzzle', 'Physics', 'Casual', 'Cocos Creator'],
     featured: true,
     category: 'mobile',
@@ -107,27 +65,10 @@ export const games: Game[] = [
     platforms: ['Playable Ad', 'AppLovin', 'Mobile'],
     coverColor: '#8B6914',
     coverColorSecondary: '#6F4E37',
-    description:
-      'A fast-paced coffee shop simulation where players brew, customize, and serve drinks to impatient customers. Time management meets puzzle mechanics.',
-    architecture:
-      'State machine-driven game flow with customer queue management. Event system for order tracking and scoring. Modular recipe system for easy content updates.',
-    challenges: [
-      'Managing multiple simultaneous customer orders without UI clutter',
-      'Fluid pour animations with dynamic liquid physics',
-      'Tight Playable Ad size constraints (< 3MB)',
-    ],
-    solutions: [
-      'Scrollable queue with priority indicators and visual countdown timers',
-      'Bezier curve-based liquid simulation using mesh deformation',
-      'Aggressive asset optimization: procedural textures, shared materials',
-    ],
-    optimizations: [
-      { metric: 'Draw Calls', before: '95', after: '12', unit: '' },
-      { metric: 'Memory', before: '88MB', after: '34MB', unit: '' },
-      { metric: 'Bundle Size', before: '5.1MB', after: '2.4MB', unit: '' },
-      { metric: 'Load Time', before: '3.2s', after: '1.2s', unit: '' },
-      { metric: 'FPS', before: '48', after: '60', unit: 'stable' },
-    ],
+    description: "A coffee service playable combining preparation, orders and visual feedback. This review focuses on predictable state transitions and a lightweight simulation loop.",
+    architecture: "Represent orders as waiting, preparing, ready, served or expired. Store recipes as data and emit UI and scoring events from guarded transitions. A lifecycle adapter pauses timers and audio when visibility changes.",
+    challenges: ["Multiple orders without duplicate service or rewards", "Readable pouring progress on a rendering budget", "Recovering orders and timers after backgrounding"],
+    solutions: ["Guard completion through an explicit order state machine", "Prefer reusable scripted pour effects and shared materials", "Pause and restore the simulation from logical state"],
     tags: ['Simulation', 'Time Management', 'Hyper Casual', 'Cocos Creator'],
     featured: true,
     category: 'playable',
@@ -155,13 +96,6 @@ export const games: Game[] = [
       'Kinematic character controller with platform velocity inheritance',
       'Pre-baked ragdoll poses with smooth blending from animated state',
       'GPU instancing for repeated obstacle meshes, culling off-screen elements',
-    ],
-    optimizations: [
-      { metric: 'Draw Calls', before: '150', after: '22', unit: '' },
-      { metric: 'Memory', before: '120MB', after: '48MB', unit: '' },
-      { metric: 'Bundle Size', before: '6.0MB', after: '1.8MB', unit: '' },
-      { metric: 'Load Time', before: '3.8s', after: '1.4s', unit: '' },
-      { metric: 'FPS', before: '38', after: '60', unit: 'stable' },
     ],
     tags: ['Runner', 'Obstacle Course', 'Hyper Casual', 'Cocos Creator'],
     featured: true,
@@ -191,13 +125,6 @@ export const games: Game[] = [
       'Polygon-based grid occupation calculation for irregular shapes',
       'Layered particle + screen shake + pitch-shifting audio feedback pipeline',
     ],
-    optimizations: [
-      { metric: 'Draw Calls', before: '130', after: '16', unit: '' },
-      { metric: 'Memory', before: '95MB', after: '42MB', unit: '' },
-      { metric: 'Bundle Size', before: '4.5MB', after: '2.1MB', unit: '' },
-      { metric: 'Load Time', before: '2.8s', after: '1.1s', unit: '' },
-      { metric: 'FPS', before: '50', after: '60', unit: 'stable' },
-    ],
     tags: ['Organization', 'Cleaning', 'Puzzle', 'Cocos Creator'],
     featured: false,
     category: 'playable',
@@ -225,13 +152,6 @@ export const games: Game[] = [
       'Custom physics material with high friction and adjusted restitution',
       'Animation-driven physics body shape updates per frame',
       'Abstracted platform layer for cross-platform deployment',
-    ],
-    optimizations: [
-      { metric: 'Draw Calls', before: '85', after: '11', unit: '' },
-      { metric: 'Memory', before: '72MB', after: '28MB', unit: '' },
-      { metric: 'Bundle Size', before: '3.8MB', after: '1.5MB', unit: '' },
-      { metric: 'Load Time', before: '2.5s', after: '0.9s', unit: '' },
-      { metric: 'FPS', before: '55', after: '60', unit: 'stable' },
     ],
     tags: ['Stacking', 'Physics', 'Cute', 'Hyper Casual', 'Cocos Creator'],
     featured: false,

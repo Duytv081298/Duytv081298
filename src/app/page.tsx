@@ -2,6 +2,7 @@
 
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import AboutSection from '@/components/sections/AboutSection';
 import HeroSection from '@/components/sections/HeroSection';
 import PlayableAdsSection from '@/components/sections/PlayableAdsSection';
 import FeaturedGamesSection from '@/components/sections/FeaturedGamesSection';
@@ -27,6 +28,7 @@ export default function Home() {
       {/* Main Content */}
       <main id="main-content" tabIndex={-1} className="relative z-10">
         <HeroSection />
+        <AboutSection />
         
         <RevealOnScroll direction="up" duration={0.85} delay={0.05}>
           <PlayableAdsSection />

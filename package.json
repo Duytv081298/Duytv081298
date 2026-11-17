@@ -9,7 +9,9 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "evidence:update": "node scripts/audit-demo-evidence.mjs",
+    "evidence:check": "node scripts/audit-demo-evidence.mjs --check"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -34,6 +36,7 @@
     "@types/three": "^0.185.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "lighthouse": "^13.6.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -3,54 +3,102 @@ import type { Game } from '@/data/games';
 
 type CaseCopy = Pick<Game, 'subtitle' | 'description' | 'architecture' | 'challenges' | 'solutions'>;
 const caseCopy: Record<string, { vi: CaseCopy; zh: CaseCopy }> = {
-  'bloom-sort': {
-    vi: {
-      subtitle: 'Giải đố sắp xếp hoa thư giãn',
-      description: 'Game giải đố sắp xếp hoa theo màu vào các lọ tương ứng. Kết hợp animation mượt mà, phản hồi xúc giác và các màn chơi có độ khó tăng dần.',
-      architecture: 'Kiến trúc MVC với GameManager trung tâm, các module giao tiếp qua sự kiện. Sử dụng object pooling cho hoa và asset bundle cho từng gói màn chơi.',
-      challenges: ['Kéo thả mượt mà với hiệu ứng đặt hoa dựa trên vật lý', 'Bộ nhớ tăng đột biến khi tải hơn 100 texture hoa', 'Bản quảng cáo chơi thử cần có dung lượng dưới 5 MB'],
-      solutions: ['Hệ thống vật lý lò xo tùy chỉnh với độ giảm chấn và độ cứng có thể điều chỉnh', 'Gộp 100 texture vào 4 atlas và cắt sprite khi chạy', 'Nén tài nguyên: PNG sang WebP, âm thanh sang MP3 bitrate thấp và thu gọn mã nguồn'],
-    },
-    zh: {
-      subtitle: '轻松的花朵分类益智游戏',
-      description: '将花朵按颜色整理到对应花瓶中的益智游戏，提供流畅动画、触觉反馈和逐步提升的关卡难度。',
-      architecture: '采用 MVC 架构和集中的 GameManager，模块间通过事件通信。花朵实例使用对象池，关卡包使用资源包。',
-      challenges: ['实现流畅拖放和基于物理的落位动画', '加载超过 100 种花朵纹理时出现内存峰值', '试玩广告体积必须小于 5 MB'],
-      solutions: ['自定义弹簧物理系统，可配置阻尼和刚度', '使用纹理图集和运行时精灵切分，将 100 张纹理合并为 4 张图集', '资源压缩流程：PNG 转 WebP、音频转低码率 MP3、代码压缩'],
-    },
+  "bloom-sort": {
+  "vi": {
+    "subtitle": "Giải đố sắp xếp hoa thư giãn",
+    "description": "Demo sắp xếp hoa theo màu để hoàn thành bàn chơi. Phân tích thiết kế tập trung vào phản hồi thao tác và tái sử dụng hiệu ứng.",
+    "architecture": "Tách dữ liệu bàn chơi, thao tác chạm và phản hồi hình ảnh. Kiểm tra nước đi trước khi cập nhật mô hình; phát sự kiện animation và hoàn thành. Giới hạn pool hiệu ứng và giải phóng tài nguyên màn khi chơi lại.",
+    "challenges": [
+      "Kéo thả nhanh nhưng ngăn nước đi không hợp lệ",
+      "Kiểm soát texture và cấp phát qua nhiều lần chơi lại",
+      "Cân bằng hình ảnh với giới hạn dung lượng từng mạng quảng cáo"
+    ],
+    "solutions": [
+      "Kiểm tra nước đi trước khi chạy animation",
+      "Gộp sprite tương thích và giới hạn pool hiệu ứng",
+      "Kiểm tra texture, âm thanh và mã nhúng trước khi chọn cách nén"
+    ]
   },
-  'screw-puzzle': {
-    vi: {
-      subtitle: 'Cơ chế tháo vít đầy cuốn hút',
-      description: 'Game giải đố tháo vít và phân loại theo màu. Có hiệu ứng xoay dựa trên vật lý, độ khó tăng dần và animation hoàn thành tạo cảm giác thỏa mãn.',
-      architecture: 'Kiến trúc dựa trên component Screw, Bolt và Board có thể tái sử dụng. Hệ thống xoay 2D tùy chỉnh được tối ưu cho thao tác cảm ứng trên di động.',
-      challenges: ['Tạo cảm giác xoay vít tự nhiên trên thiết bị cảm ứng', 'Bố cục bảng phức tạp với các đường vít chồng chéo', 'Hiệu năng giảm khi có hơn 20 vít chuyển động trên thiết bị cấu hình thấp'],
-      solutions: ['Ánh xạ thao tác chạm thành góc xoay với quán tính và ma sát', 'Phân vùng không gian để phát hiện va chạm giữa các đường vít', 'Hệ thống LOD đơn giản hóa animation cho vít ngoài màn hình hoặc ở xa'],
-    },
-    zh: {
-      subtitle: '令人满足的拧螺丝玩法',
-      description: '通过拧下螺丝并按颜色整理来解谜，提供真实的旋转物理、逐步提升的难度和富有成就感的完成动画。',
-      architecture: '采用组件架构，复用 Screw、Bolt 和 Board 组件。自定义 2D 旋转系统针对移动触控进行优化。',
-      challenges: ['在触控设备上实现真实的螺丝旋转手感', '处理螺丝路径交叠的复杂面板布局', '低端设备上超过 20 个螺丝动画导致性能下降'],
-      solutions: ['将触控映射为旋转，并加入惯性和摩擦', '通过空间分区检测螺丝路径之间的碰撞', '使用 LOD 系统简化屏幕外或远处螺丝的动画'],
-    },
+  "zh": {
+    "subtitle": "轻松的花朵分类益智游戏",
+    "description": "按颜色分组花朵以完成棋盘的试玩。本设计分析重点关注及时输入反馈和视觉特效复用。",
+    "architecture": "分离棋盘数据、触控输入与视觉反馈。先验证移动再更新模型，通过事件触发动画与完成。限制特效池大小，并在重启时释放关卡资源。",
+    "challenges": [
+      "及时拖动反馈且阻止无效移动",
+      "控制多次重启中的纹理驻留与内存分配",
+      "在各平台包体限制内保留视觉多样性"
+    ],
+    "solutions": [
+      "验证移动后再播放动画",
+      "合并兼容精灵并限制可复用特效池",
+      "分别检查纹理、音频和嵌入代码后选择压缩方式"
+    ]
+  }
+},
+  "screw-puzzle": {
+  "vi": {
+    "subtitle": "Cơ chế tháo vít đầy cuốn hút",
+    "description": "Demo tháo thanh gỗ bằng cách chuyển vít vào lỗ trống hợp lệ. Phân tích tập trung vào kiểm tra nước đi và đồng bộ phản hồi hình ảnh.",
+    "architecture": "Biểu diễn lỗ, vít và quan hệ phụ thuộc của thanh gỗ bằng dữ liệu. Cập nhật mô hình như một giao dịch sau khi kiểm tra; lớp hiển thị riêng chạy animation. Quản lý rõ trạng thái chơi lại và hoàn thành.",
+    "challenges": [
+      "Chạm liên tục áp dụng cùng nước đi hai lần",
+      "Lỗ bị chặn và thanh gỗ chồng chéo",
+      "Animation lệch trạng thái logic sau gián đoạn"
+    ],
+    "solutions": [
+      "Khóa nước đi đang thực hiện đến khi ghi nhận trạng thái xong",
+      "Kiểm tra vị trí trống và quan hệ phụ thuộc trước animation",
+      "Đặt lại cả lớp logic và hình ảnh cùng lúc"
+    ]
   },
-  'coffee-please': {
-    vi: {
-      subtitle: 'Mô phỏng pha chế và phục vụ cà phê',
-      description: 'Game mô phỏng quán cà phê nhịp độ nhanh: pha chế, tùy chỉnh và phục vụ đồ uống cho khách hàng đang chờ. Kết hợp quản lý thời gian và giải đố.',
-      architecture: 'Luồng game dựa trên máy trạng thái, kết hợp quản lý hàng chờ. Hệ thống sự kiện theo dõi đơn hàng và điểm số; module công thức giúp cập nhật nội dung dễ dàng.',
-      challenges: ['Quản lý nhiều đơn hàng đồng thời mà không làm rối giao diện', 'Animation rót nước tự nhiên với mô phỏng chất lỏng', 'Giới hạn dung lượng quảng cáo chơi thử dưới 3 MB'],
-      solutions: ['Hàng chờ cuộn được với chỉ báo ưu tiên và đếm ngược trực quan', 'Mô phỏng chất lỏng theo đường cong Bézier bằng biến dạng mesh', 'Tối ưu tài nguyên với texture tạo bằng thuật toán và material dùng chung'],
-    },
-    zh: {
-      subtitle: '冲泡与服务咖啡店模拟',
-      description: '快节奏咖啡店模拟游戏：冲泡、定制并为等待的顾客提供饮品，将时间管理与解谜玩法结合。',
-      architecture: '使用状态机驱动流程并管理顾客队列，通过事件系统追踪订单和计分。模块化配方系统便于内容更新。',
-      challenges: ['同时管理多笔订单且保持界面清晰', '实现动态液体物理的流畅倾倒动画', '试玩广告体积限制小于 3 MB'],
-      solutions: ['使用可滚动队列、优先级提示和可视化倒计时', '基于 Bézier 曲线和网格变形模拟液体', '通过程序化纹理和共享材质深度优化资源'],
-    },
+  "zh": {
+    "subtitle": "令人满足的拧螺丝玩法",
+    "description": "将螺丝移到有效空孔以拆除木板的试玩。重点分析移动验证与视觉反馈同步。",
+    "architecture": "以数据表示孔位、螺丝和木板依赖。验证后原子更新棋盘模型，由独立视图层播放动画。明确重启与完成状态。",
+    "challenges": [
+      "快速连点导致移动执行两次",
+      "受阻孔位与重叠木板依赖",
+      "中断后动画与逻辑状态不一致"
+    ],
+    "solutions": [
+      "锁定当前移动直到状态更新提交",
+      "动画前验证占用与依赖",
+      "同时重置逻辑与显示层"
+    ]
+  }
+},
+  "coffee-please": {
+  "vi": {
+    "subtitle": "Mô phỏng pha chế và phục vụ cà phê",
+    "description": "Demo phục vụ cà phê kết hợp pha chế, đơn hàng và phản hồi hình ảnh. Phân tích tập trung vào chuyển trạng thái nhất quán và vòng lặp mô phỏng gọn nhẹ.",
+    "architecture": "Đơn hàng có trạng thái chờ, pha chế, sẵn sàng, đã phục vụ hoặc hết hạn. Lưu công thức dạng dữ liệu, chỉ phát sự kiện UI và điểm số khi đủ điều kiện chuyển trạng thái. Lớp quản lý vòng đời dừng thời gian, âm thanh khi thay đổi hiển thị.",
+    "challenges": [
+      "Nhiều đơn hàng nhưng không phục vụ hay thưởng trùng",
+      "Thể hiện tiến độ rót trong giới hạn render",
+      "Khôi phục đơn hàng và thời gian khi quay lại từ nền"
+    ],
+    "solutions": [
+      "Kiểm soát hoàn thành bằng máy trạng thái đơn hàng",
+      "Ưu tiên hiệu ứng rót theo kịch bản tái sử dụng và material chung",
+      "Dừng và khôi phục mô phỏng từ trạng thái logic"
+    ]
   },
+  "zh": {
+    "subtitle": "冲泡与服务咖啡店模拟",
+    "description": "结合制作、订单与视觉反馈的咖啡服务试玩。重点分析可预测状态转换和轻量模拟循环。",
+    "architecture": "将订单表示为等待、制作、就绪、已服务或过期。以数据存储配方，通过受保护的转换发出界面和计分事件。生命周期适配器在可见性变化时暂停计时与音频。",
+    "challenges": [
+      "多笔订单下防止重复服务或奖励",
+      "在渲染预算内清晰展示倾倒进度",
+      "进入后台后恢复订单与计时器"
+    ],
+    "solutions": [
+      "以显式订单状态机保护完成逻辑",
+      "优先复用脚本化倾倒效果与共享材质",
+      "从逻辑状态暂停和恢复模拟"
+    ]
+  }
+},
   'fall-guy-legend': {
     vi: {
       subtitle: 'Chạy đua vượt chướng ngại vật',

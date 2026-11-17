@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
+import { siteUrl, socialImage } from '@/lib/site';
+import { profile } from '@/data/profile';
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-heading",
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Trịnh Văn Duy" }],
   metadataBase: new URL("https://duytv081298.github.io"),
-  alternates: { canonical: "/Duytv081298/" },
+  alternates: { canonical: siteUrl },
   robots: { index: true, follow: true },
   openGraph: {
     title: "Trịnh Văn Duy — Senior Game Developer",
@@ -50,11 +52,14 @@ export const metadata: Metadata = {
     url: "/Duytv081298/",
     siteName: "Trịnh Văn Duy | Game Developer Portfolio",
     locale: "en_US",
+    alternateLocale: ['vi_VN', 'zh_CN'],
+    images: [socialImage],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Trịnh Văn Duy — Senior Game Developer",
     description: "Playable ads, game engineering and performance optimization.",
+    images: [socialImage],
   },
 };
 
@@ -70,6 +75,12 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-bg-primary text-text antialiased">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org', '@type': 'Person', '@id': `${siteUrl}#person`,
+          name: profile.name, jobTitle: profile.role, url: siteUrl,
+          sameAs: [profile.github, profile.linkedin],
+          knowsAbout: ['Cocos Creator', 'Unity', 'HTML5 games', 'Playable ads'],
+        }).replace(/</g, '\\u003c') }} />
         <LocaleProvider>{children}</LocaleProvider>
       </body>
     </html>

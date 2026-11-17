@@ -22,7 +22,7 @@ export default function SectionHeader({ title, subtitle, accent, icon, align = '
       {accent && <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">{t(accent)}</p>}
       <div className={`flex items-center gap-3 ${align === 'center' ? 'justify-center' : ''}`}>
         {icon && <span className="shrink-0 text-primary" aria-hidden="true">{icon}</span>}
-        <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-text md:text-4xl">{title}</h2>
+        <h2 id={id ? `${id}-heading` : undefined} className="font-display text-3xl font-bold leading-tight tracking-tight text-text md:text-4xl">{title}</h2>
         {id && <button type="button" onClick={copyLink} aria-label={`${t('Copy section link')}: ${typeof title === 'string' ? title : ''}`} className="grid size-11 shrink-0 place-items-center rounded-lg text-text-secondary transition-colors hover:bg-card hover:text-primary"><LinkIcon size={18} aria-hidden="true" /></button>}
       </div>
       <p role="status" className={status ? 'mt-2 text-xs text-primary' : 'sr-only'}>{status && t(status)}</p>

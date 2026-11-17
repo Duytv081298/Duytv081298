@@ -11,14 +11,15 @@ import { BriefcaseBusiness, Download, Gamepad2, Layers3, Play, Zap } from 'lucid
 import { GithubIcon, FacebookIcon, LinkedinIcon } from '@/components/ui/BrandIcons';
 import MagneticButton from '@/components/ui/MagneticButton';
 import GlowOrb from '@/components/effects/GlowOrb';
-import CVModal from '@/components/ui/CVModal';
+import dynamic from 'next/dynamic';
+const CVModal = dynamic(() => import('@/components/ui/CVModal'), { ssr: false });
 import { playableAds } from '@/data/playableAds';
 
 const stats = [
-  { value: '30+', label: 'projects', color: '#3EA6FF', Icon: Layers3 },
+  { value: String(playableAds.length), label: 'Playable Ads', color: '#3EA6FF', Icon: Layers3 },
   { value: profile.years, label: 'years', color: '#00DFA2', Icon: Zap },
-  { value: '4', label: 'companies', color: '#9B74FF', Icon: BriefcaseBusiness },
-  { value: 'HTML5', label: 'cocos', color: '#8AB4FF', Icon: Gamepad2 },
+  { value: String(profile.experience.length), label: 'companies', color: '#9B74FF', Icon: BriefcaseBusiness },
+  { value: '2', label: 'Core engines', color: '#8AB4FF', Icon: Gamepad2 },
 ];
 
 const iconPositions = [
@@ -77,7 +78,7 @@ export default function HeroSection() {
             </motion.div>
 
             <motion.div
-              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.08 }}
             >
@@ -88,10 +89,10 @@ export default function HeroSection() {
                 </span>
               </h1>
               <p className="mt-4 font-display text-lg font-semibold text-[#A8B6CB] lg:text-xl">
-                {t('role')}
+                {t(profile.role)}
               </p>
               <p className="mt-4 max-w-[570px] text-sm leading-7 text-text-secondary">
-                {t('intro')}
+                {t(profile.intro)}
               </p>
             </motion.div>
 
@@ -206,7 +207,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <CVModal isOpen={isCVModalOpen} onClose={() => setIsCVModalOpen(false)} />
+      {isCVModalOpen && <CVModal isOpen onClose={() => setIsCVModalOpen(false)} />}
     </section>
   );
 }

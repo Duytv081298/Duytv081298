@@ -13,9 +13,9 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: process.env.TEST_BASE_URL ? undefined : {
-    command: 'npm run dev -- --hostname 127.0.0.1',
-    url: 'http://127.0.0.1:3000',
-    reuseExistingServer: !process.env.CI,
+    command: process.env.TEST_STATIC_EXPORT ? 'node scripts/serve-export.mjs' : 'npm run dev -- --hostname 127.0.0.1',
+    url: `http://127.0.0.1:3000${process.env.TEST_BASE_PATH || ''}/`,
+    reuseExistingServer: !process.env.CI && !process.env.TEST_STATIC_EXPORT,
     timeout: 120000,
   },
 });

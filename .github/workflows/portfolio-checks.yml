@@ -1,6 +1,8 @@
 name: Portfolio quality checks
 
 on:
+  push:
+    branches: [feature/portfolio-evidence-seo-audit]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -24,10 +26,26 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint -- --max-warnings=0
-      - run: npm run build
+      - run: npm run evidence:check
       - run: npm run typecheck
+      - run: npm run build
       - run: npx playwright install --with-deps chromium
-      - run: npm test
+      - name: Playwright against GitHub Pages static export
+        run: npm test
+        env:
+          TEST_STATIC_EXPORT: "1"
+          TEST_BASE_PATH: /Duytv081298
+      - name: Mobile Lighthouse on the production export
+        if: success()
+        run: |
+          mkdir -p lighthouse-report
+          node scripts/serve-export.mjs > /tmp/portfolio-static.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3000/Duytv081298/ > /dev/null; then break; fi
+            sleep 1
+          done
+          npx lighthouse http://127.0.0.1:3000/Duytv081298/ --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --output=json --output=html --output-path=lighthouse-report/mobile --quiet
+          node scripts/report-lighthouse.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -35,4 +53,5 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            lighthouse-report/
           retention-days: 14

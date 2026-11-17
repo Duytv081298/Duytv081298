@@ -6,8 +6,10 @@ import Link from 'next/link';
 import { useLocale } from '@/components/i18n/LocaleProvider';
 import { localizeGame } from '@/components/i18n/game-copy';
 import { LanguageSelect } from '@/components/layout/Navbar';
-import { ArrowLeft, Cpu, Zap, TrendingDown, ArrowRight, Target, Lightbulb, Wrench } from 'lucide-react';
+import { ArrowLeft, Cpu, Target, Lightbulb, Wrench } from 'lucide-react';
 import { type Game } from '@/data/games';
+import { caseStudies } from '@/data/caseStudies';
+import demoEvidence from '@/data/demoEvidence.json';
 import { PlatformBadge } from '@/components/ui/Badge';
 import RevealOnScroll from '@/components/ui/RevealOnScroll';
 import GridBackground from '@/components/effects/GridBackground';
@@ -17,55 +19,12 @@ interface GameDetailClientProps {
   game: Game;
 }
 
-function OptimizationCard({
-  metric,
-  before,
-  after,
-  index,
-}: {
-  metric: string;
-  before: string;
-  after: string;
-  index: number;
-}) {
-  const { t } = useLocale();
-  return (
-    <RevealOnScroll delay={index * 0.1}>
-      <div className="relative bg-card border border-border rounded-xl p-6 hover:border-primary/30 transition-all duration-300 group">
-        <p className="text-text-muted text-xs font-code uppercase tracking-wider mb-4">
-          {t(metric)}
-        </p>
-
-        <div className="flex items-center gap-3">
-          {/* Before */}
-          <div className="flex-1 text-center">
-            <p className="text-danger font-code text-2xl font-bold">{before}</p>
-            <p className="text-text-muted text-[10px] mt-1 uppercase">{t('Before')}</p>
-          </div>
-
-          {/* Arrow */}
-          <div className="flex flex-col items-center gap-1">
-            <TrendingDown size={16} className="text-accent" />
-            <ArrowRight size={14} className="text-accent" />
-          </div>
-
-          {/* After */}
-          <div className="flex-1 text-center">
-            <p className="text-accent font-code text-2xl font-bold">{after}</p>
-            <p className="text-text-muted text-[10px] mt-1 uppercase">{t('After')}</p>
-          </div>
-        </div>
-
-        {/* Glow on hover */}
-        <div className="absolute inset-0 rounded-xl bg-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-      </div>
-    </RevealOnScroll>
-  );
-}
-
 export default function GameDetailClient({ game: source }: GameDetailClientProps) {
   const { locale, t } = useLocale();
   const game = localizeGame(source, locale);
+  const study = caseStudies[game.slug];
+  const evidence = demoEvidence[game.slug as keyof typeof demoEvidence];
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
   const reduceMotion = useReducedMotion();
   return (
     <main id="main-content" tabIndex={-1} className="min-h-screen bg-bg-primary text-text">
@@ -114,7 +73,7 @@ export default function GameDetailClient({ game: source }: GameDetailClientProps
                   background: `linear-gradient(135deg, ${game.coverColor}, ${game.coverColorSecondary})`,
                 }}
               >
-                <span className="text-white/90 font-display font-bold text-3xl drop-shadow-lg">
+                <span className="px-5 text-center text-white font-display font-bold text-2xl drop-shadow-lg">
                   {game.title}
                 </span>
               </div>
@@ -122,7 +81,7 @@ export default function GameDetailClient({ game: source }: GameDetailClientProps
 
             {/* Details */}
             <motion.div
-              className="flex-1"
+              className="min-w-0 flex-1"
               initial={reduceMotion ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -158,6 +117,7 @@ export default function GameDetailClient({ game: source }: GameDetailClientProps
       {/* Neon Divider */}
       <div className="neon-line" />
 
+      <div className="section-container pt-8"><p role="note" className="rounded-xl border border-border bg-card p-5 text-sm leading-relaxed text-text-secondary">{t('The playable can be inspected directly. The architecture and validation steps below are design analysis; original source code and device benchmark reports are not available here.')}</p></div>
       {/* Content Sections */}
       <div className="section-container py-16 space-y-20">
         {/* Architecture */}
@@ -235,36 +195,25 @@ export default function GameDetailClient({ game: source }: GameDetailClientProps
           </RevealOnScroll>
         </div>
 
-        <p className="rounded-lg border border-border bg-card p-4 text-sm text-text-secondary" role="note">{locale === 'vi' ? 'Lưu ý: Các chỉ số tối ưu hóa theo từng dự án bên dưới là dữ liệu minh họa trong hồ sơ và chưa được đối chiếu với báo cáo benchmark gốc.' : locale === 'zh' ? '注意：以下各项目优化数据尚未与原始基准测试报告核对，请勿视为已验证的结果。' : 'Evidence note: Project-specific optimization figures below have not been cross-checked against original benchmark reports and should not be treated as independently verified results.'}</p>
-
-        {/* Performance Optimization */}
-        <div>
-          <RevealOnScroll>
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
-                <Zap size={20} className="text-accent" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-display font-bold text-text">
-                  {t('Performance Optimization')}
-                </h2>
-                <p className="text-text-muted text-xs font-code">{"// before_vs_after"}</p>
-              </div>
-            </div>
-          </RevealOnScroll>
-
-          <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {game.optimizations.map((opt, i) => (
-              <OptimizationCard
-                key={opt.metric}
-                metric={opt.metric}
-                before={opt.before}
-                after={opt.after}
-                index={i}
-              />
-            ))}
+        {study && <section aria-labelledby="tradeoffs-heading" className="grid gap-8 lg:grid-cols-2">
+          <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
+            <h2 id="tradeoffs-heading" className="text-2xl font-bold">{t('Engineering trade-offs')}</h2>
+            <p className="mt-4 text-sm leading-7 text-text-secondary">{t(study.tradeoff)}</p>
           </div>
-        </div>
+          <div><h2 className="text-2xl font-bold">{t('Validation plan')}</h2>
+            <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-7 text-text-secondary">{study.validation.map((step) => <li key={step}>{t(step)}</li>)}</ol>
+          </div>
+        </section>}
+        {evidence && <section aria-labelledby="evidence-heading" className="rounded-xl border border-primary/30 bg-card p-5 sm:p-6">
+          <h2 id="evidence-heading" className="text-2xl font-bold">{t('Inspect the playable artifact')}</h2>
+          <p className="mt-3 text-sm leading-7 text-text-secondary">{t('File size is measured from the committed HTML artifact in decimal bytes. It is not a runtime memory, FPS, transfer size or ad-network acceptance benchmark.')}</p>
+          <dl className="mt-5 grid min-w-0 gap-4 sm:grid-cols-2">
+            <div><dt className="text-sm text-text-secondary">{t('HTML file size')}</dt><dd className="mt-1 font-code text-primary">{(evidence.bytes / 1_000_000).toFixed(2)} MB · {evidence.bytes.toLocaleString(locale)} {t('bytes')}</dd></div>
+            <div><dt className="text-sm text-text-secondary">{t('Artifact title')}</dt><dd className="mt-1 break-words text-sm">{evidence.title}</dd></div>
+            <div className="min-w-0 sm:col-span-2"><dt className="text-sm text-text-secondary">SHA-256</dt><dd className="mt-1 break-all font-code text-xs leading-6 text-text-secondary">{evidence.sha256}</dd></div>
+          </dl>
+          <a href={`${basePath}${evidence.publicPath}`} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex min-h-11 items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-bg-primary">{t('Open playable demo')}<span className="sr-only"> — {game.title}</span></a>
+        </section>}
 
         {/* Tags */}
         <RevealOnScroll>
