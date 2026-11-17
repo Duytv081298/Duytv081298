@@ -271,7 +271,7 @@ export default function PlayableAdsSection() {
                   onClick={() => openPlayer(ad)}
                   aria-labelledby={`playable-action-${ad.slug} playable-title-${ad.slug} playable-category-${ad.slug}`}
                 >
-                  <span id={`playable-action-${ad.slug}`} className="sr-only">{t('Play demo')}</span>
+                  <span id={`playable-action-${ad.slug}`} className="sr-only">{t('Play demo')}{' '}</span>
                   {/* Card */}
                   <div
                     className={`glass-premium relative flex aspect-square w-full flex-col items-center justify-center overflow-hidden rounded-xl border p-3 transition-all duration-300 ${
@@ -320,7 +320,7 @@ export default function PlayableAdsSection() {
                       </div>
 
                       <span id={`playable-title-${ad.slug}`} className="mt-3 line-clamp-1 max-w-full px-1 text-center font-display text-xs font-bold leading-tight text-white/95 transition-colors duration-200 group-hover:text-primary sm:text-[13px]">
-                        {ad.title}
+                        {ad.title}{' '}
                       </span>
                       <span id={`playable-category-${ad.slug}`} className="mt-2 inline-flex rounded-full border border-white/10 bg-white/[0.045] px-2 py-0.5 font-code text-[8px] capitalize leading-none text-text-secondary backdrop-blur-md transition-colors duration-200 group-hover:border-primary/20 group-hover:text-text">
                         {t(playableCategories.find((category) => category.value === ad.category)?.label ?? ad.category)}
